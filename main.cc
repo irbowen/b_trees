@@ -19,5 +19,6 @@ int main() {
     st.insert(i, i*2);
   }
   st.print_all();
+  std::cout << std::endl;
   return 0;
 }

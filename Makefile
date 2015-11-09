@@ -3,7 +3,7 @@ CXXFLAGS := -Wall -Wextra -ansi -pedantic -std=c++14
 DEPS := $(wildcard *.h)
 
 PROG = Trees
-OBJS = main.o read_write_lock.o dynamic_locker.o seq_tree.o 
+OBJS = main.o read_write_lock.o dynamic_locker.o seq_tree.o node.o
 
 all: debug
 

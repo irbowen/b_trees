@@ -5,20 +5,16 @@
 #include <algorithm>
 #include <iostream>
 
+#include "node.h"
+
 class Sequential_Tree {
-
-  class Node {
-  public:
-    int key;
-    int value;  
-    Node(int key_, int value_) : key(key_), value(value_) {}
-  };
-
-  std::vector<Node*> children;
-
 public:
-  Sequential_Tree();
+  Node* root;
+  Sequential_Tree() {
+    root = new Leaf_Node();
+  }
   void insert(int, int);
+  void split();
   void print_all();
 };
 
