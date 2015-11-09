@@ -42,7 +42,7 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key* &node_key) {
   if (elements.size() < DATA_SLOTS) {
     elements.push_back(std::make_tuple(key, value));
     std::sort(begin(elements), end(elements), [](auto& a, auto& b) {
-      return std::get<0>(a) < std::get<1>(b);
+      return std::get<0>(a) < std::get<0>(b);
     });
     return false;
   }
@@ -52,6 +52,10 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key* &node_key) {
     std::cout << "\nThe new key is: " << std::get<0>(new_key);
     std::vector<std::tuple<int, int>> left(begin(elements), begin(elements) + mid_point);
     std::vector<std::tuple<int, int>> right(begin(elements) + mid_point, end(elements));
+    std::cout << "\nOld array:";
+    for (auto& a : elements) {
+      std::cout << std::get<0>(a) << " " ;
+    }
     std::cout << "\nLeft array:";
     for(auto& a : left) {
       std::cout << std::get<0>(a) << " ";
@@ -60,8 +64,21 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key* &node_key) {
     for(auto& a : right) {
       std::cout << std::get<0>(a) << " ";
     }
-    Leaf_Node* left_node = new Leaf_Node(left);
-    Leaf_Node* right_node = new Leaf_Node(right);
+    std::cout << std::endl;
+    std::cout << "Got to heere.. about to try to create a leaf node\n" << std::endl;
+    node_key->node = new Leaf_Node();
+    std::cout << "Created a new leafe node \n" << std::endl;
+    reinterpret_cast<Leaf_Node*>(node_key->node)->add_vector(right);
     return true;
   }
+
+
 }
+
+void Leaf_Node::add_vector(std::vector<std::tuple<int, int>> v) {
+  for (auto& i : v) {
+    elements.push_back(i);
+  }
+}
+
+

@@ -50,6 +50,7 @@ public:
     elements.reserve(DATA_SLOTS);
   }
   Leaf_Node(std::vector<std::tuple<int, int>> v) : elements(v) {}
+  void add_vector(std::vector<std::tuple<int, int>>);
   bool add_key_value_pair(int, int, Node_key*&);
 };
 
