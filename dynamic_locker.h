@@ -1,22 +1,23 @@
 #ifndef DYNAMIC_LOCKER_H
 #define DYNAMIC_LOCKER_H
 
-#include "read_write_lock.h"
 #include <map>
 #include <mutex>
 #include <memory>
 
-class DyanmicLocker {
-    std::mutex m;
-    std::map<int, std::shared_ptr<ReadWriteLock>> rw_lock_table;
-    std::map<int, int> rw_lock_count;
-    void createLock(int inode);
-    void deleteLock(int inode);
+#include "read_write_lock.h"
+
+class Dyanmic_Locker {
+  std::mutex m;
+  std::map<int, std::shared_ptr<Reader_Writer_Lock>> lock_table;
+  std::map<int, int> lock_count;
+  void create_lock(int);
+  void delete_lock(int);
 public:
-    void read_lock(int inode);
-    void read_unlock(int inode);
-    void write_lock(int inode);
-    void write_unlock(int inode);
+  void read_lock(int);
+  void read_unlock(int);
+  void write_lock(int);
+  void write_unlock(int);
 };
 
 #endif

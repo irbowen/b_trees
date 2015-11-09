@@ -9,11 +9,15 @@ using namespace std;
 int main() {
   cout << "Hi\n";
 
-  DyanmicLocker dynamic_lock_manager;
-
+  Dyanmic_Locker dynamic_lock_manager;
   dynamic_lock_manager.read_lock(1);
-  cout << "Currently locked\n";
   dynamic_lock_manager.read_unlock(1);
-  cout << "Unlocked\n";
+  
+  Sequential_Tree st;
+  st.insert(2,3);
+  for (int i = 0; i < 20; i++) {
+    st.insert(i, i*2);
+  }
+  st.print_all();
   return 0;
 }

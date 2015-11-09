@@ -1,38 +1,38 @@
 #include "dynamic_locker.h"
 
-void DyanmicLocker::createLock(int inode) {
+void Dyanmic_Locker::create_lock(int inode) {
     std::unique_lock<std::mutex> lock(m);
-    if (rw_lock_count.count(inode) == 0 || rw_lock_count.at(inode) == 0) {
-        rw_lock_table[inode] = std::make_shared<ReadWriteLock>();
-        rw_lock_count[inode] = 0;
+    if (lock_count.count(inode) == 0 || lock_count.at(inode) == 0) {
+        lock_table[inode] = std::make_shared<Reader_Writer_Lock>();
+        lock_count[inode] = 0;
     }
-    rw_lock_count[inode]++;
+    lock_count[inode]++;
 }
 
-void DyanmicLocker::deleteLock(int inode) {
+void Dyanmic_Locker::delete_lock(int inode) {
     std::unique_lock<std::mutex> lock(m);
-    rw_lock_count[inode]--;
-    if (rw_lock_count.at(inode) == 0) {
-        rw_lock_table.erase(inode);
+    lock_count[inode]--;
+    if (lock_count.at(inode) == 0) {
+        lock_table.erase(inode);
     }
 }
 
-void DyanmicLocker::read_lock(int inode) {
-    createLock(inode);
-    rw_lock_table[inode]->read_lock();
+void Dyanmic_Locker::read_lock(int inode) {
+    create_lock(inode);
+    lock_table[inode]->read_lock();
 }
 
-void DyanmicLocker::read_unlock(int inode) {
-    rw_lock_table[inode]->read_unlock();
-    deleteLock(inode);
+void Dyanmic_Locker::read_unlock(int inode) {
+    lock_table[inode]->read_unlock();
+    delete_lock(inode);
 }
 
-void DyanmicLocker::write_lock(int inode) {
-    createLock(inode);
-    rw_lock_table[inode]->write_lock();
+void Dyanmic_Locker::write_lock(int inode) {
+    create_lock(inode);
+    lock_table[inode]->write_lock();
 }
 
-void DyanmicLocker::write_unlock(int inode) {
-    rw_lock_table[inode]->write_unlock();
-    deleteLock(inode);
+void Dyanmic_Locker::write_unlock(int inode) {
+    lock_table[inode]->write_unlock();
+    delete_lock(inode);
 }

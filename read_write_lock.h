@@ -5,7 +5,7 @@
 #include <condition_variable>
 #include <thread>
 
-class ReadWriteLock {
+class Reader_Writer_Lock {
     std::mutex m;
     std::condition_variable cv;
     int read_count{0};
