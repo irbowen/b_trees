@@ -87,6 +87,7 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       std::cout << std::get<0>(a) << " ";
     }
 
+    elements.resize(mid_point);
     node_key.key = std::get<0>(new_key);
     node_key.node = new Leaf_Node();
     std::cout << "\nCreated a new leaf node" << std::endl << std::endl;
