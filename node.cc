@@ -1,6 +1,11 @@
 #include "node.h"
 
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
+  std::cout << "Keys in this INNER node: ";
+  for (auto& k : keys) {
+    std::cout << k << " ";
+  }
+  std::cout << std::endl;
   // If nothing is in this inner_node
   if (keys.size() == 0) {
     std::cout << "Inital setup\n";
@@ -13,14 +18,16 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   else if (keys.size() < FAN_OUT) {
     bool inserted = false;
     for (size_t i = 0; i < keys.size(); i++) {
-      if (key < keys.at(i)) {
+      if (key <= keys.at(i)) {
         add_to_child(i, key, value);
         inserted = true;
         break;
       }
     }
-    if (!inserted) {
-      auto min_index = std::min(keys.size()-1, FAN_OUT);
+    auto max_z = std::max_element(begin(keys), end(keys));
+    //std::cout << "Max key in this nodeis: " << *max_z << std::endl;
+    if (!inserted && key > *max_z) {
+      auto min_index = std::min(keys.size(), FAN_OUT);
       add_to_child(min_index, key, value);
     }
   }
@@ -29,6 +36,7 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     node_key.node = new Inner_Node();
     return true;
   }
+  std::cout << std::endl;
   return false;
 }
 
@@ -36,9 +44,7 @@ void Inner_Node::add_to_child(int index, int key, int value) {
   Node_key temp;
   if (values.at(index)->add_key_value_pair(key, value, temp)) {
     std::cout << "We're adding: <key: " << temp.key << ", value: " << temp.node << "> to an inner node\n";
-    auto it = find_if(begin(keys), end(keys), [=](auto x){
-      return key > x;
-    });
+    auto it = lower_bound(begin(keys), end(keys), key);
     auto index = it - keys.begin();
     keys.insert(it, temp.key);
     values.insert(values.begin() + index, temp.node);
@@ -46,6 +52,11 @@ void Inner_Node::add_to_child(int index, int key, int value) {
 }
 
 bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
+  std::cout << "Keys in this LEAF node: ";
+  for (auto& e : elements) {
+    std::cout << std::get<0>(e) << " ";
+  }
+  std::cout << std::endl;
   // If we don't have to split the node
   if (elements.size() < DATA_SLOTS) {
     //std::cout << "Adding to a leaf node without splitting\n";
@@ -80,6 +91,7 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     node_key.node = new Leaf_Node();
     std::cout << "\nCreated a new leaf node" << std::endl << std::endl;
     reinterpret_cast<Leaf_Node*>(node_key.node)->add_vector(right);
+    std::cout << std::endl;
     return true;
   }
 
