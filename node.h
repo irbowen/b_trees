@@ -7,39 +7,39 @@
 #include <iostream>
 
 /*  Maxiumum number of data slots in leaf nodes */
-const int DATA_SLOTS = 10;
+const size_t DATA_SLOTS = 10;
 
 /*  Maximum number of children in inner nodes */
-const int FAN_OUT = 10;
+const size_t FAN_OUT = 10;
 
 class Node;
 
 class Node_key {
 public:
   int key;
-  Node* node;
+  Node* node = nullptr;
 };
 
 /*  Emptry superclass of nodes.
     Basically so we can have data structs of Node* */
 class Node {
 public:
-  virtual bool add_key_value_pair(int, int, Node_key*&) = 0;
+  virtual bool add_key_value_pair(int, int, Node_key&) = 0;
 };
 
 
 /* Class for the inner nodes in the tree */
 class Inner_Node : public Node {
-  /*  
-      */
+  /**/
   std::vector<int> keys;
   std::vector<Node*> values;
+  void add_to_child(int, int, int);
 public:
   Inner_Node() {
     keys.reserve(FAN_OUT);
     values.reserve(FAN_OUT + 1);
   }
-  bool add_key_value_pair(int, int, Node_key*&);
+  bool add_key_value_pair(int, int, Node_key&);
 };
 
 /* Class for the leaf nodes of the tree */
@@ -51,7 +51,7 @@ public:
   }
   Leaf_Node(std::vector<std::tuple<int, int>> v) : elements(v) {}
   void add_vector(std::vector<std::tuple<int, int>>);
-  bool add_key_value_pair(int, int, Node_key*&);
+  bool add_key_value_pair(int, int, Node_key&);
 };
 
 #endif

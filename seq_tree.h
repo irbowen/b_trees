@@ -11,7 +11,7 @@ class Sequential_Tree {
 public:
   Node* root;
   Sequential_Tree() {
-    root = new Leaf_Node();
+    root = new Inner_Node();
   }
   void insert(int, int);
   void split();

@@ -15,7 +15,8 @@ int main() {
   
   Sequential_Tree st;
   st.insert(2,3);
-  for (int i = 0; i < 20; i++) {
+  for (int i = 0; i < 15; i++) {
+    cout << "Calling insert on key: " << i << " value " << i*2 << "\n";
     st.insert(i, i*2);
   }
   st.print_all();

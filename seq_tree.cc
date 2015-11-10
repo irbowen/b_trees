@@ -2,7 +2,7 @@
 
 void Sequential_Tree::insert(int key, int value) {
   //Wory about splitting here too
-  Node_key* temp = nullptr;
+  Node_key temp;
   root->add_key_value_pair(key, value, temp);
 }
 
