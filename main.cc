@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int NUM_TEST = 50;
+const int NUM_TEST = 5000;
 
 int main() {
   cout << "Hi\n";
