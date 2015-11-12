@@ -1,15 +1,16 @@
 #include "node.h"
 
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
-  std::cout << "Keys in this INNER node: ";
+  std::cout << "--INNER node keys: ";
   for (auto& k : keys) {
     std::cout << k << " ";
   }
   std::cout << std::endl;
   // If nothing is in this inner_node
   if (keys.size() == 0) {
-    std::cout << "Inital setup\n";
+    std::cout << "NOTE: INTIAL SETUP\n";
     keys.push_back(key);
+    std::cout << "--Added key " << key << " to inner node\n";
     values.push_back(new Leaf_Node());
     values.push_back(new Leaf_Node());
     Node_key temp;
@@ -30,9 +31,10 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       auto min_index = std::min(keys.size(), FAN_OUT);
       add_to_child(min_index, key, value);
     }
+    std::cout << "--Sent request to child for key " << key << "\n";
   }
   if (keys.size() >= FAN_OUT) {
-    std::cout << "We have to split the inner node\n";
+    std::cout << "TODO: We have to split the inner node\n";
     node_key.node = new Inner_Node();
     return true;
   }
@@ -52,7 +54,7 @@ void Inner_Node::add_to_child(int index, int key, int value) {
 }
 
 bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
-  std::cout << "Keys in this LEAF node: ";
+  std::cout << "--LEAF node keys: ";
   for (auto& e : elements) {
     std::cout << std::get<0>(e) << " ";
   }
@@ -64,6 +66,7 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     std::sort(begin(elements), end(elements), [](auto& a, auto& b) {
       return std::get<0>(a) < std::get<0>(b);
     });
+    std::cout << "--Added key " << key << " to leaf node\n";
     return false;
   }
   else {
@@ -87,11 +90,11 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       std::cout << std::get<0>(a) << " ";
     }
 
+    elements.resize(mid_point);
     node_key.key = std::get<0>(new_key);
     node_key.node = new Leaf_Node();
-    std::cout << "\nCreated a new leaf node" << std::endl << std::endl;
+    std::cout << "\nCreated a new leaf node" << std::endl;
     reinterpret_cast<Leaf_Node*>(node_key.node)->add_vector(right);
-    std::cout << std::endl;
     return true;
   }
 

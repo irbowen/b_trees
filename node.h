@@ -12,6 +12,7 @@ const size_t DATA_SLOTS = 10;
 /*  Maximum number of children in inner nodes */
 const size_t FAN_OUT = 10;
 
+/* Forward declaration to make the compiler happy */
 class Node;
 
 class Node_key {
