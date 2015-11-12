@@ -36,14 +36,17 @@ class Inner_Node : public Node {
   std::vector<Node*> values;
   void add_to_child(int, int, int);
   bool is_root = false;
-  void print_keys();
   void create_first_node(int, int);
 public:
   Inner_Node() {
     keys.reserve(FAN_OUT);
     values.reserve(FAN_OUT + 1);
   }
+  void print_keys();
   bool add_key_value_pair(int, int, Node_key&);
+  void add_vector_keys(std::vector<int>);
+  void add_vector_nodes(std::vector<Node*>);
+  void add_key(int);
 };
 
 /* Class for the leaf nodes of the tree */

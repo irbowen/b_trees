@@ -9,7 +9,7 @@
 
 class Sequential_Tree {
 public:
-  Node* root;
+  Inner_Node* root;
   Sequential_Tree() {
     root = new Inner_Node();
   }
