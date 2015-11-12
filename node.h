@@ -36,6 +36,8 @@ class Inner_Node : public Node {
   std::vector<Node*> values;
   void add_to_child(int, int, int);
   bool is_root = false;
+  void print_keys();
+  void create_first_node(int, int);
 public:
   Inner_Node() {
     keys.reserve(FAN_OUT);
