@@ -11,12 +11,14 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     std::cout << "NOTE: INTIAL SETUP\n";
     keys.push_back(key);
     std::cout << "--Added key " << key << " to inner node\n";
+    //To get things started, we need a leaf node on each side of the first key
     values.push_back(new Leaf_Node());
     values.push_back(new Leaf_Node());
     Node_key temp;
     values.at(0)->add_key_value_pair(key, value, temp);
   }
   else if (keys.size() < FAN_OUT) {
+    std::cout << "--Inserting into inner node\n";
     bool inserted = false;
     for (size_t i = 0; i < keys.size(); i++) {
       if (key <= keys.at(i)) {
@@ -28,16 +30,34 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     auto max_z = std::max_element(begin(keys), end(keys));
     //std::cout << "Max key in this nodeis: " << *max_z << std::endl;
     if (!inserted && key > *max_z) {
-      auto min_index = std::min(keys.size(), FAN_OUT);
+      auto min_index = std::min(keys.size() - 1, FAN_OUT);
       add_to_child(min_index, key, value);
     }
     std::cout << "--Sent request to child for key " << key << "\n";
   }
   if (keys.size() >= FAN_OUT) {
-    std::cout << "TODO: We have to split the inner node\n";
-    node_key.node = new Inner_Node();
+    std::cout << "--Splitting inner node\n";
+    auto mid_point = FAN_OUT / 2;
+    std::cout << "Midpoint, size: " << mid_point << ", " << keys.size() << "\n";
+    std::cout << std::endl;
+    std::cout << std::endl;
+    auto new_key = keys.at(mid_point);
+    std::vector<int> right_keys(begin(keys), end(keys) + mid_point);
+    std::vector<Node*> right_values(begin(values) + mid_point, end(values));
+    std::cout << "Old array: ";
+    for (size_t i = 0; i < keys.size(); i++) { std::cout << keys.at(i) << " ";}
+    std::cout << std::endl;
+    keys.resize(mid_point + 1);
+    values.resize(mid_point + 1);
+    std::cout << "New array: ";
+    for (size_t i = 0; i < keys.size(); i++) { std::cout << keys.at(i) << " ";}
+    std::cout << std::endl;
+    std::cout << "New key: " << new_key << std::endl;
+   //node_key.node = new Inner_Node();
     return true;
   }
+  //Change this
+  node_key.node = nullptr;
   std::cout << std::endl;
   return false;
 }
@@ -78,22 +98,16 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     std::vector<std::tuple<int, int>> right(begin(elements) + mid_point, end(elements));
    
     std::cout << "\nOld array:";
-    for (auto& a : elements) {
-      std::cout << std::get<0>(a) << " " ;
-    }
+    for (auto& a : elements) { std::cout << std::get<0>(a) << " " ; }
     std::cout << "\nLeft array:";
-    for(auto& a : left) {
-      std::cout << std::get<0>(a) << " ";
-    }
+    for(auto& a : left) { std::cout << std::get<0>(a) << " "; }
     std::cout << "\nRight array:";
-    for(auto& a : right) {
-      std::cout << std::get<0>(a) << " ";
-    }
+    for(auto& a : right) { std::cout << std::get<0>(a) << " "; }
 
     elements.resize(mid_point);
     node_key.key = std::get<0>(new_key);
     node_key.node = new Leaf_Node();
-    std::cout << "\nCreated a new leaf node" << std::endl;
+    std::cout << "\nCreated a new leaf node\n" << std::endl;
     reinterpret_cast<Leaf_Node*>(node_key.node)->add_vector(right);
     return true;
   }
