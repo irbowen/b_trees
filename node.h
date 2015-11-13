@@ -26,39 +26,9 @@ public:
 class Node {
 public:
   virtual bool add_key_value_pair(int, int, Node_key&) = 0;
-};
-
-
-/* Class for the inner nodes in the tree */
-class Inner_Node : public Node {
-  /**/
-  std::vector<int> keys;
-  std::vector<Node*> values;
-  void add_to_child(int, int, int);
-  bool is_root = false;
-  void create_first_node(int, int);
-public:
-  Inner_Node() {
-    keys.reserve(FAN_OUT);
-    values.reserve(FAN_OUT + 1);
-  }
-  void print_keys();
-  bool add_key_value_pair(int, int, Node_key&);
-  void add_vector_keys(std::vector<int>);
-  void add_vector_nodes(std::vector<Node*>);
-  void add_key(int);
-};
-
-/* Class for the leaf nodes of the tree */
-class Leaf_Node : public Node {
-  std::vector<std::tuple<int, int>> elements;
-public:
-  Leaf_Node() {
-    elements.reserve(DATA_SLOTS);
-  }
-  Leaf_Node(std::vector<std::tuple<int, int>> v) : elements(v) {}
-  void add_vector(std::vector<std::tuple<int, int>>);
-  bool add_key_value_pair(int, int, Node_key&);
+  /*  In Inner_Nodes, this will call thsi function for each node below it
+      For Leaf Nodes, this will print out all the keys */
+  virtual void print_r() = 0;
 };
 
 #endif

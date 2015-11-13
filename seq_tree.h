@@ -5,7 +5,8 @@
 #include <algorithm>
 #include <iostream>
 
-#include "node.h"
+#include "inner_node.h"
+
 
 class Sequential_Tree {
 public:

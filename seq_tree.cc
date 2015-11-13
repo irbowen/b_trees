@@ -21,9 +21,6 @@ void Sequential_Tree::insert(int key, int value) {
 }
 
 void Sequential_Tree::print_all() {
-  /*
-  for (auto& child : children) {
-    std::cout << child->key << " " << child->value << "\n";
-  }
-  */
+  root->print_r();
 }
+
