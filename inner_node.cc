@@ -23,6 +23,7 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     if (!inserted && key > *max_key) {
       auto min_index = std::min(keys.size() - 1, FAN_OUT);
       add_to_child(min_index, key, value);
+      inserted = true;
     }
     if (!inserted)
       cout << "ABORT: SOMETHING HAS GONE VERY WRONG\n";
