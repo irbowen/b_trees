@@ -8,21 +8,29 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   // If nothing is in this inner_node
   if (keys.size() == 0) {
     create_first_node(key, value);
+    // We can return false right away, because we know this node cannot split
+    return false;
   }
-  if (keys.size() < FAN_OUT) {
+  //if (keys.size() < FAN_OUT) {
     // cout << "--Inserting into inner node\n";
+  // Because we always want to insert
+  if (true) {
     bool inserted = false;
     for (size_t i = 0; i < keys.size(); i++) {
       if (key <= keys.at(i)) {
         add_to_child(i, key, value);
+        std::cout << "Node: " << i << std::endl;
         inserted = true;
+        // std::cout << " Inserted key into this innner node\n" << std::endl;
         break;
       }
     }
     auto max_key = std::max_element(begin(keys), end(keys));
     if (!inserted && key > *max_key) {
-      auto min_index = std::min(keys.size() - 1, FAN_OUT);
+      auto min_index = std::min(keys.size(), FAN_OUT);
       add_to_child(min_index, key, value);
+//      std::cout << "Had to add it at the end of the inner node\n" << std::endl;
+      std::cout << "inserting at end\n" <<std::endl;
       inserted = true;
     }
     if (!inserted)
@@ -30,29 +38,32 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     // cout << "--Sent request to child for key " << key << "\n";
   }
   if (keys.size() >= FAN_OUT) {
-    std::cout << "--Splitting inner node\n";
+    std::cout << "--IN:AKVP::Splitting inner node\n";
     auto mid_point = FAN_OUT / 2;
-    std::cout << "Midpoint, size: " << mid_point << ", " << keys.size() << "\n";
+    std::cout << "--IN:AKVP::Midpoint, size: " << mid_point << ", " << keys.size() << "\n";
     std::cout << std::endl;
     auto new_key = keys.at(mid_point);
     std::vector<int> right_keys(begin(keys), end(keys) + mid_point);
     std::vector<Node*> right_values(begin(values) + mid_point, end(values));
-    std::cout << "Old array: ";
-    for (size_t i = 0; i < keys.size(); i++) { std::cout << keys.at(i) << " ";}
-    std::cout << std::endl;
+    //std::cout << "Old array: ";
+    //for (size_t i = 0; i < keys.size(); i++) { std::cout << keys.at(i) << " ";}
+    //std::cout << std::endl;
     keys.resize(mid_point + 1);
     values.resize(mid_point + 1);
-    std::cout << "New array: ";
-    for (size_t i = 0; i < keys.size(); i++) { std::cout << keys.at(i) << " ";}
-    std::cout << std::endl;
-    std::cout << "New key: " << new_key << std::endl;
-    node_key.node = new Inner_Node();
+    //std::cout << "New array: ";
+    //for (size_t i = 0; i < keys.size(); i++) { std::cout << keys.at(i) << " ";}
+    std::cout << "--IN:AKVP::New key: " << new_key << std::endl;
+    Inner_Node* right_inner_node = new Inner_Node();
+    right_inner_node->add_vector_keys(right_keys);
+    right_inner_node->add_vector_nodes(right_values);
+    node_key.node = right_inner_node;
     node_key.key = new_key;
+    std::cout << "--IN:AKVP::Returning true for inner node add_key_value_pair" << std::endl;
     return true;
   }
   //Change this
   node_key.node = nullptr;
-  std::cout << std::endl;
+  std::cout << "--IN:AKVP::Done with add_key_value_pair " << key << ", set size: " << keys.size() << std::endl;
   return false;
 }
 
@@ -61,9 +72,11 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
 void Inner_Node::add_to_child(int index, int key, int value) {
   Node_key temp;
   if (values.at(index)->add_key_value_pair(key, value, temp)) {
-    std::cout << "We're adding: <key: " << temp.key << ", value: " << temp.node << "> to an inner node\n";
+    std::cout << "----Returned true from add_key_value_pair" << std::endl;
+    std::cout << "----Adding: <key: " << temp.key << ", value: " << temp.node << "> to an inner node\n";
     auto it = lower_bound(begin(keys), end(keys), key);
     auto index = it - keys.begin();
+    std::cout << "----Index is: " << index << std::endl;
     keys.insert(it, temp.key);
     values.insert(values.begin() + index, temp.node);
   }
