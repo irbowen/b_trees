@@ -1,3 +1,7 @@
+## TODOs
+- Email IA
+- Give ryan write permissions
+
 ## Concurrent B-Tree
 - Relevant Articles
   - [Eff. locking](http://www.csd.uoc.gr/~hy460/pdf/p650-lehman.pdf)
