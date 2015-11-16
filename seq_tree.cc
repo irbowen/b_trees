@@ -1,14 +1,16 @@
 #include "seq_tree.h"
 
+using namespace std;
+
 void Sequential_Tree::insert(int key, int value) {
   //Wory about splitting here too
   Node_key temp;
   //If this returns true, than that means the root has been split
   if (root->add_key_value_pair(key, value, temp)) {
-    std::cout << "--RNS ROOT NODE SPLITTING\n";
-    std::cout << "--RNS  NEW KEY: " << key << "\n";
+    cout << "--RNS ROOT NODE SPLITTING\n";
+    cout << "--RNS  NEW KEY: " << key << "\n";
     Inner_Node* new_root = new Inner_Node();
-    std::vector<Node*> new_children;
+    vector<Node*> new_children;
     new_children.push_back(root);
     new_children.push_back(temp.node);
     new_root->add_key(temp.key);
@@ -18,9 +20,11 @@ void Sequential_Tree::insert(int key, int value) {
     root = new_root;
     root->print_keys();
   }
+  print_all();
 }
 
 void Sequential_Tree::print_all() {
-  root->print_r();
+  cout << "\n==PRINT ALL==\n";
+  root->print_r(1);
 }
 

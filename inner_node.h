@@ -1,10 +1,6 @@
 #ifndef INNER_NODE_H
 #define INNER_NODE_H
 
-#include <vector>
-#include <algorithm>
-#include <iostream>
-
 #include "node.h"
 
 /* Class for the inner nodes in the tree */
@@ -19,12 +15,12 @@ public:
   }
   std::vector<int> keys;
   std::vector<Node*> values;
-  void print_keys();
   bool add_key_value_pair(int, int, Node_key&);
   void add_vector_keys(std::vector<int>);
   void add_vector_nodes(std::vector<Node*>);
   void add_key(int);
-  void print_r();
+  void print_keys();
+  void print_r(int);
 };
 
 #endif

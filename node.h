@@ -5,6 +5,7 @@
 #include <tuple>
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 /*  Maxiumum number of data slots in leaf nodes */
 const size_t DATA_SLOTS = 4;
@@ -28,7 +29,7 @@ public:
   virtual bool add_key_value_pair(int, int, Node_key&) = 0;
   /*  In Inner_Nodes, this will call thsi function for each node below it
       For Leaf Nodes, this will print out all the keys */
-  virtual void print_r() = 0;
+  virtual void print_r(int) = 0;
 };
 
 #endif

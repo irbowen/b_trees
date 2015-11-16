@@ -4,7 +4,7 @@
 using namespace std;
 
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
-  print_keys();
+ // print_keys();
   // If nothing is in this inner_node
   if (keys.size() == 0) {
     create_first_node(key, value);
@@ -19,19 +19,19 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     for (size_t i = 0; i < keys.size(); i++) {
       if (key <= keys.at(i)) {
         add_to_child(i, key, value);
-        std::cout << "Node: " << i << "key, key compare: " << key << ", " << keys.at(i) << " "<< std::endl;
+        //std::cout << "Node: " << i << "key, key compare: " << key << ", " << keys.at(i) << " "<< std::endl;
         inserted = true;
         // std::cout << " Inserted key into this innner node\n" << std::endl;
         break;
       }
     }
     auto max_key = std::max_element(begin(keys), end(keys));
-    std::cout << "Max key: " << *max_key << std::endl;
+  //  std::cout << "Max key: " << *max_key << std::endl;
     if (!inserted && key > *max_key) {
-      auto min_index = std::min(keys.size(), FAN_OUT);
-      std::cout << "FANOUT, key size: " << FAN_OUT << " " << keys.size() << std::endl;
-         std::cout << "Node: " << min_index << "key, key compare: " << key << ", " << keys.at(min_index-1) << " "<< std::endl;
-      add_to_child(min_index-1, key, value);
+      //auto min_index = std::min(keys.size(), FAN_OUT);
+     // std::cout << "FANOUT, key size: " << FAN_OUT << " " << keys.size() << std::endl;
+   //      std::cout << "Node: " << keys.size() << "key, key compare: " << key << ", " << keys.at(keys.size()-1) << " "<< std::endl;
+      add_to_child(keys.size(), key, value);
 //      std::cout << "Had to add it at the end of the inner node\n" << std::endl;
       //std::cout << "inserting at end\n" <<std::endl;
       inserted = true;
@@ -76,12 +76,19 @@ void Inner_Node::add_to_child(int index, int key, int value) {
   Node_key temp;
   if (values.at(index)->add_key_value_pair(key, value, temp)) {
     //std::cout << "----Returned true from add_key_value_pair" << std::endl;
-    std::cout << "----Adding: <key: " << temp.key << ", value: " << temp.node << "> to an inner node\n";
+   // std::cout << "----Adding: <key: " << temp.key << ", value: " << temp.node << "> to an inner node\n";
+    /*  Search for the key.  If we can't find it, add to the end */ 
     auto it = lower_bound(begin(keys), end(keys), key);
-    auto index = it - keys.begin();
-   // std::cout << "----Index is: " << index << std::endl;
-    keys.insert(it, temp.key);
-    values.insert(values.begin() + index, temp.node);
+    if (it == end(keys)) {
+      keys.push_back(temp.key);
+      values.push_back(temp.node);
+    }
+    /*  If we can find it, that is where we have to insert */
+    else {
+      auto index = it - keys.begin();
+      keys.insert(it, temp.key);
+      values.insert(values.begin() + index, temp.node);
+    }
   }
 }
 
@@ -116,22 +123,27 @@ void Inner_Node::add_vector_nodes(std::vector<Node*> v) {
 }
 
 void Inner_Node::print_keys() {
-  std::cout << "--INNER node keys: ";
+  cout << "--INNER node keys: ";
   for (auto& k : keys) {
-    std::cout << k << " ";
+    cout << k << " ";
   }
-  std::cout << std::endl;
+  cout << endl;
 }
 
-void Inner_Node::print_r() {
-  std::cout << "Inner(";
+void Inner_Node::print_r(int depth) {
+  string padding(depth, ' ');
+  ostringstream oss;
+  oss << endl;
+  oss << padding << "Inner(";
   for (auto& k : keys) {
-    std::cout << k << ", ";
+    oss << k << ", ";
   }
-  std::cout << ")->{";
+  oss << ")->{\n";
+  cout << oss.str();
   for (auto& v : values) {
-    v->print_r();
+    v->print_r(depth+1);
+    cout << endl;
   }
-  std::cout << "} ";
+  cout << padding  << "} ";
 }
 

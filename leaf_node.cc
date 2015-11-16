@@ -4,9 +4,9 @@ using namespace std;
 
 bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /*--- Debugging output ---*/
-  std::cout << "--LEAF node keys: ";
-  print_r();
-  std::cout << "Elements size: " << elements.size() << " " << std::endl;
+//  std::cout << "--LEAF node keys: ";
+ // print_keys();
+//  std::cout << "Elements size: " << elements.size() << " " << std::endl;
   /*---- If we can just push it into the vector ---*/
   //if (elements.size() < DATA_SLOTS) {
     //std::cout << "Adding to a leaf node without splitting\n";
@@ -49,10 +49,15 @@ void Leaf_Node::add_vector(std::vector<std::tuple<int, int>> v) {
 }
 
 /*  Prints all the keys of the elements stored in this leaf node */
-void Leaf_Node::print_r() {
-  cout << "[";
+void Leaf_Node::print_r(int depth) {
+  string padding(depth, ' ');
+  cout << padding << "Leaf: [";
+  print_keys();
+  cout << "]";
+}
+
+void Leaf_Node::print_keys() {
   for (auto& e : elements) {
     cout << get<0>(e) << ", ";
   }
-  cout << "]";
 }
