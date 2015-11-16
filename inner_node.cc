@@ -131,10 +131,9 @@ void Inner_Node::print_keys() {
 }
 
 void Inner_Node::print_r(int depth) {
-  string padding(depth, ' ');
+  string padding(depth * 2, ' ');
   ostringstream oss;
-  oss << endl;
-  oss << padding << "Inner(";
+  oss << padding << "Inner: (";
   for (auto& k : keys) {
     oss << k << ", ";
   }
