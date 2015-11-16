@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int NUM_TEST = 5;
+const int NUM_TEST = 10;
 
 int main() {
   cout << "Hi\n";
@@ -19,10 +19,6 @@ int main() {
   for (int i = 0; i < NUM_TEST; i++) {
     cout << "\nCALLING INSERT key: " << i << "\n";
     st.insert(i, i*2);
-  }
-  for (int i = 0; i < NUM_TEST; i++) {
-    cout << "\nCALLING INSERT key: " << i +1 << "\n";
-    st.insert(i + 1, i + 3);
   }
   st.print_all();
   std::cout << std::endl;
