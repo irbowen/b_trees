@@ -12,9 +12,12 @@ public:
   Inner_Node() {
     keys.reserve(FAN_OUT);
     values.reserve(FAN_OUT + 1);
+    unique_id = 2;
   }
   std::vector<int> keys;
   std::vector<Node*> values;
+
+  int unique_id;
   bool add_key_value_pair(int, int, Node_key&);
   void add_vector_keys(std::vector<int>);
   void add_vector_nodes(std::vector<Node*>);

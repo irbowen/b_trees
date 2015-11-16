@@ -2,21 +2,23 @@
 
 using namespace std;
 
+Leaf_Node::Leaf_Node() {
+  elements.reserve(DATA_SLOTS);
+  left_sibling = nullptr;
+  right_sibling = nullptr;
+  unique_id = Node::get_counter();
+}
+
 bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /*- Debugging output -*/
   /*  std::cout << "--LEAF node keys: ";
       print_keys();
       std::cout << "Elements size: " << elements.size() << " " << std::endl; */
-  /*-- If we can just push it into the vector -*/
-  //if (elements.size() < DATA_SLOTS) {
-    //std::cout << "Adding to a leaf node without splitting\n";
-  /*- We always want to insert into this node.  We can worry about splits lates -*/
- // if (true) {
-    elements.push_back(std::make_tuple(key, value));
-    std::sort(begin(elements), end(elements), [](auto& a, auto& b) {
-      return std::get<0>(a) < std::get<0>(b);
-    });
-//  }
+  /*  We always want to insert into this node.  We can worry about splits lates */
+  elements.push_back(std::make_tuple(key, value));
+  std::sort(begin(elements), end(elements), [](auto& a, auto& b) {
+    return std::get<0>(a) < std::get<0>(b);
+  });
   if (elements.size() >= DATA_SLOTS) {
     //std::cout << "--SPLITTING LEAF NODE\n";
     auto mid_point = DATA_SLOTS / 2;
@@ -31,10 +33,15 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     */
     elements.resize(mid_point);
     //std::cout << "ELEMENTS NEW SIZE: " << elements.size() << std::endl;
+
     node_key.key = std::get<0>(new_key);
     node_key.node = new Leaf_Node();
-    //std::cout << "----Created a new leaf node" << std::endl;
-    reinterpret_cast<Leaf_Node*>(node_key.node)->add_vector(right);
+    /*  Shuffling pointers around */
+    Leaf_Node* temp = right_sibling;
+    right_sibling = reinterpret_cast<Leaf_Node*>(node_key.node);
+    right_sibling->left_sibling = this;
+    right_sibling->right_sibling = temp;
+    right_sibling->add_vector(right);
     return true;
   }
   return false;
@@ -51,7 +58,7 @@ void Leaf_Node::add_vector(std::vector<std::tuple<int, int>> v) {
 /*  Prints all the keys of the elements stored in this leaf node */
 void Leaf_Node::print_r(int depth) {
   string padding(depth * 2, ' ');
-  cout << padding << "Leaf: [";
+  cout << padding << "Leaf(" << unique_id << "): [";
   print_keys();
   cout << "]";
 }

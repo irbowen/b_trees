@@ -64,9 +64,6 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     //std::cout << "--IN:AKVP::Returning true for inner node add_key_value_pair" << std::endl;
     return true;
   }
-  //Change this
-  node_key.node = nullptr;
-  //std::cout << "--IN:AKVP::Done with add_key_value_pair " << key << ", set size: " << keys.size() << std::endl;
   return false;
 }
 
@@ -133,7 +130,7 @@ void Inner_Node::print_keys() {
 void Inner_Node::print_r(int depth) {
   string padding(depth * 2, ' ');
   ostringstream oss;
-  oss << padding << "Inner: (";
+  oss << padding << "Inner(" << unique_id << "): (";
   for (auto& k : keys) {
     oss << k << ", ";
   }

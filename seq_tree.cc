@@ -20,6 +20,7 @@ void Sequential_Tree::insert(int key, int value) {
     root = new_root;
     root->print_keys();
   }
+  print_all();
 }
 
 void Sequential_Tree::print_all() {
