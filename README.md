@@ -1,3 +1,8 @@
+## Notes
+- Check out the latest commit.  I added/finished up the print_r functions for the nodes and seq_tree, so now instead of haphzardly putting couts in functions, we can just call this statement to print the whole tree.
+- Within 30 mins of finishing this function, I was able to track down the bug that was creating the incorrect ordering
+- Calling it a night, but I think I can start generating data tomorrow!
+
 ## TODOs
 - Email IA
 - Give ryan write permissions
