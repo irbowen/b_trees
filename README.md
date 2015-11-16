@@ -4,8 +4,9 @@
 - Calling it a night, but I think I can start generating data tomorrow!
 
 ## TODOs
-- Email IA
 - Give ryan write permissions
+- Read over papers again
+- Get more concrete idea of what we're gonna implement
 
 ## Concurrent B-Tree
 - Relevant Articles
