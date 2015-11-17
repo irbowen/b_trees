@@ -8,10 +8,10 @@
 #include <sstream>
 
 /*  Maxiumum number of data slots in leaf nodes */
-const size_t DATA_SLOTS = 10;
+const size_t DATA_SLOTS = 80;
 
 /*  Maximum number of children in inner nodes */
-const size_t FAN_OUT = 10;
+const size_t FAN_OUT = 80;
 
 /* Forward declaration to make the compiler happy */
 class Node;

@@ -92,7 +92,7 @@ void Inner_Node::add_to_child(int index, int key, int value) {
 /*  Creates two leaf nodes, or each side of the first key.
     Only needs to be called once */
 void Inner_Node::create_first_node(int key, int value) {
-  cout << "NOTE: INTIAL SETUP\n";
+ // cout << "NOTE: INTIAL SETUP\n";
   //cout << "--Added key " << key << " to inner node\n";
   //To get things started, we need a leaf node on each side of the first key
   keys.push_back(key);

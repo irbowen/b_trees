@@ -5,7 +5,7 @@ DEPS := $(wildcard *.h)
 PROG = Trees
 OBJS = main.o read_write_lock.o dynamic_locker.o seq_tree.o node.o inner_node.o leaf_node.o
 
-all: debug
+all: release
 
 release: CXXFLAGS += -O3
 release: $(PROG)
