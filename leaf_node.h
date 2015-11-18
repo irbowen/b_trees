@@ -8,7 +8,7 @@ class Leaf_Node : public Node {
   /*  The actual data to be stored.  The first element is the key,
       the second is the value.  Right now the value is an int -
       I was thinking disk block number - but this could be anything */  
-  std::vector<std::tuple<int, int>> elements;
+  std::list<std::tuple<int, int>> elements;
 public:
   /*  Left and right siblings so that we can avoid 
       going up to the parent to do range queries */
@@ -22,7 +22,7 @@ public:
     is used if the node is split */
   bool add_key_value_pair(int, int, Node_key&);
   /*  Add the argument vector to the nodes internal elements vecotr */
-  void add_vector(std::vector<std::tuple<int, int>>);
+  void add_vector(std::list<std::tuple<int, int>>);
   /*  Print the elements, with spacing based on the int arg */
   void print_r(int);
   /* Print all the keys stored in elements vector */

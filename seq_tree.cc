@@ -10,7 +10,7 @@ void Sequential_Tree::insert(int key, int value) {
    // cout << "--RNS ROOT NODE SPLITTING\n";
   //  cout << "--RNS  NEW KEY: " << key << "\n";
     Inner_Node* new_root = new Inner_Node();
-    vector<Node*> new_children;
+    list<Node*> new_children;
     new_children.push_back(root);
     new_children.push_back(temp.node);
     new_root->add_key(temp.key);
@@ -20,11 +20,12 @@ void Sequential_Tree::insert(int key, int value) {
     root = new_root;
    // root->print_keys();
   }
-  // print_all();
+  print_all();
 }
 
 void Sequential_Tree::print_all() {
   cout << "\n==PRINT ALL==\n";
   root->print_r(1);
+  cout << "\n" << endl;
 }
 
