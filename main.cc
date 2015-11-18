@@ -8,9 +8,9 @@
 
 using namespace std;
 
-const int NUM_TEST = 1000;
+const int NUM_TEST = 10000;
 
-const int MOD_FACTOR = 1000;
+const int MOD_FACTOR = 10000;
 
 void time_it(int arg) {
   Sequential_Tree st;
@@ -18,7 +18,7 @@ void time_it(int arg) {
   start = clock();
   for (int i = 0; i < arg; i++) {
     auto temp = rand() % MOD_FACTOR;
-    cout << "INSERT: " << temp << "";
+//    cout << "INSERT: " << temp << "";
     st.insert(temp, i*2);
   }
   cout << (clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
