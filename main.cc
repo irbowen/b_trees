@@ -1,26 +1,38 @@
 #include <iostream>
 #include <thread>
+#include <ctime>
+#include <cstdlib>
 
 #include "seq_tree.h"
 #include "dynamic_locker.h"
 
 using namespace std;
 
-const int NUM_TEST = 100;
+const int NUM_TEST = 10000;
+
+const int MOD_FACTOR = 10000;
+
+void time_it(int arg) {
+  Sequential_Tree st;
+  clock_t start;
+  start = clock();
+  for (int i = 0; i < arg; i++) {
+    auto temp = rand() % MOD_FACTOR;
+//    cout << "INSERT: " << temp << "";
+    st.insert(temp, i*2);
+  }
+  cout << (clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
+  st.print_all();
+}
 
 int main() {
-  cout << "Hi\n";
-
-  Dyanmic_Locker dynamic_lock_manager;
-  dynamic_lock_manager.read_lock(1);
-  dynamic_lock_manager.read_unlock(1);
-  
-  Sequential_Tree st;
-  for (int i = 0; i < NUM_TEST; i++) {
-    cout << "\nCALLING INSERT key: " << i << "\n";
-    st.insert(i, i*2);
-  }
-  st.print_all();
-  std::cout << std::endl;
+  cout << "Size, Time\n";
+  srand(0);
+ /* int shift = 7;
+  for (int i = 4; i < 1<<shift; i = i * 2) {
+    time_it(i);
+    cout << "\n~~~~~~~TRIAL~~~~~~~\n";
+  }*/
+  time_it(NUM_TEST);
   return 0;
 }
