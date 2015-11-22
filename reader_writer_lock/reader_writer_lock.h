@@ -19,6 +19,7 @@ public:
   void read_unlock();
   void write_lock();
   void write_unlock();
+  void upgrade_lock();
 };
 
 #endif

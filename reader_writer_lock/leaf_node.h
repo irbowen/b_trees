@@ -18,7 +18,7 @@ public:
   Leaf_Node* left_sibling;
   Leaf_Node* right_sibling;
 
-  int unique_id;
+  //int unique_id;
   /*  Creates a new leaf node */
   Leaf_Node();
   /*  Inheirteed from Node.  Add the (int,int) pair, Node_key
@@ -30,6 +30,7 @@ public:
   void print_r(int);
   /* Print all the keys stored in elements vector */
   void print_keys();
+  bool can_split();
 };
 
 #endif

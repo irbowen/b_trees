@@ -3,24 +3,42 @@
 
 using namespace std;
 
+/*  Not using dynamic locking, so uneeded */
 /*  Just assinged the node's unique_id... Nothing else to do */
 Inner_Node::Inner_Node() {
   unique_id = Node::get_counter();
 }
 
+
+bool Inner_Node::can_split() {
+  if (keys.size() + 1 >= FAN_OUT) {
+    return true;
+  }
+  return false;
+}
+
+
 /*  Return true if this nodes splits, false if not  */
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
+  /* We don't even need to worry about this now - parent calls this for us.*/
   /*  If this is the very first Inner_Node in the tree, we have to do some setup */
+  /*
   if (keys.size() == 0) {
     create_first_node(key, value);
     return false;
   }
+  */
   
+  node_lock.read_lock();
   bool inserted = false;
   auto values_post = begin(values);
   auto this_key = begin(keys);
   for (; this_key != end(keys); this_key++, values_post++) {
     if (key <= *this_key) {
+        if ((*values_post)->can_split()) {
+          cout << "Okay, i'm trying to upgrade this lock\n";
+          node_lock.upgrade_lock();
+        }
         add_to_child(values_post, key, value);
         //std::cout << "Node: " << i << "key, key compare: " << key << ", " << keys.at(i) << " "<< std::endl;
         inserted = true;
@@ -77,8 +95,10 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     node_key.node = right_inner_node;
     node_key.key = new_key;
     //std::cout << "--IN:AKVP::Returning true for inner node add_key_value_pair" << std::endl;
+    node_lock.write_unlock();
     return true;
   }
+  node_lock.read_unlock();
   return false;
 }
 

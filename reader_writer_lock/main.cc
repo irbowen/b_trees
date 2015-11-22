@@ -4,23 +4,30 @@
 #include <cstdlib>
 
 #include "seq_tree.h"
-#include "dynamic_locker.h"
+#include "reader_writer_lock.h"
 
 using namespace std;
 
-const int NUM_TEST = 10000;
+const int NUM_TEST = 100;
 
-const int MOD_FACTOR = 1000000;
+const int MOD_FACTOR = 10000;
 
-void time_it(int arg) {
-  Sequential_Tree st;
-  clock_t start;
-  start = clock();
+Sequential_Tree st;
+
+void insert(int arg) {
   for (int i = 0; i < arg; i++) {
     auto temp = rand() % MOD_FACTOR;
-//    cout << "INSERT: " << temp << "";
     st.insert(temp, i*2);
   }
+}
+
+void time_it(int arg) {
+  clock_t start;
+  start = clock();
+  thread t1(insert, arg);
+  thread t2(insert, arg);
+  t1.join();
+  t2.join();
   cout << (clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
   st.print_all();
 }
