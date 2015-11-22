@@ -2,6 +2,7 @@
 #define LEAF_NODE_H
 
 #include "node.h"
+#include "reader_writer_lock.h"
 
 /* Class for the leaf nodes of the tree */
 class Leaf_Node : public Node {
@@ -9,6 +10,8 @@ class Leaf_Node : public Node {
       the second is the value.  Right now the value is an int -
       I was thinking disk block number - but this could be anything */  
   std::list<std::tuple<int, int>> elements;
+  /*  The reader writer lock object for this object */
+  Reader_Writer_Lock node_lock;
 public:
   /*  Left and right siblings so that we can avoid 
       going up to the parent to do range queries */

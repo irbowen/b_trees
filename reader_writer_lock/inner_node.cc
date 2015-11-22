@@ -103,11 +103,11 @@ void Inner_Node::add_to_child(list<Node*>::iterator index, int key, int value) {
       for (auto i = 0; i < dist; i++) {value_it++;} 
       keys.insert(keys_it, temp.key);
 //      cout << "dist: " << dist << endl;
-      auto new_dist = distance(value_it, begin(values));
+  //    auto new_dist = distance(value_it, begin(values));
  //     cout << "new dist: " << new_dist << endl;
       index++;
       
-      auto index_dist = distance(index, begin(values));
+   //   auto index_dist = distance(index, begin(values));
   //    cout << "index distance: " << index_dist << endl;
 //      assert(index_dist == dist);
       values.insert(index, temp.node);

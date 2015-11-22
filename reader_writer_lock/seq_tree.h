@@ -6,9 +6,10 @@
 #include <iostream>
 
 #include "inner_node.h"
-
+#include "dynamic_locker.h"
 
 class Sequential_Tree {
+  Dyanmic_Locker lock_table;
 public:
   Inner_Node* root;
   Sequential_Tree() {
