@@ -11,7 +11,7 @@ Inner_Node::Inner_Node() {
 
 /*  How thread safe does this need to be? */
 bool Inner_Node::can_split() {
-  if (keys.size() + 1 >= FAN_OUT) {
+  if (keys.size() >= FAN_OUT) {
     return true;
   }
   return false;
@@ -29,7 +29,6 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       we want to insert into its left(down) child */
   for (; this_key != end(keys); this_key++, this_value++) {
     /*  We want to see if this is the key */
-    safe_cout("In this here for loop");
     if (key <= *this_key) {
       child_can_split = (*this_value)->can_split();
       if (!child_can_split) {
@@ -49,11 +48,12 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     }
   }
   /*  Probably need the same code from above ^^^, down here */
-  auto max_key = std::max_element(begin(keys), end(keys));
-  if (!inserted && key > *max_key) {
-      child_can_split = (*this_value)->can_split();
+  //  auto max_key = std::max_element(begin(keys), end(keys));
+  if (!inserted) { // && key > *max_key) {
+    safe_cout("In this here end case");  
+    child_can_split = (*this_value)->can_split();
       if (!child_can_split) {
-        safe_cout("Okay, i'm trying to upgrade this lock END END END");
+        safe_cout("Downgrading to shared_lock in END case");
         m.lock();
         node_mutex.unlock();
         node_mutex.lock_shared();
@@ -62,7 +62,12 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     add_to_child(this_value, key, value);
     inserted = true;
   }
-  if (keys.size() >= FAN_OUT) {
+  if (!child_can_split && keys.size() < FAN_OUT ) {
+    safe_cout("Unlocking shared and returning\n");
+    node_mutex.unlock_shared();
+    return false;
+  }
+  if (keys.size() >= FAN_OUT && child_can_split) {
     //std::cout << "--IN:AKVP::Splitting inner node\n";
     auto mid_point = FAN_OUT / 2;
     auto keys_it = begin(keys);
@@ -96,7 +101,8 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     node_mutex.unlock();
     return true;
   }
-  node_mutex.unlock_shared();
+  safe_cout("THIS SHOULD NEVER HAPPEN\nSOMETHING IS WRONG WITH MY LOGIC AND LOCKING\nHALP");
+  exit(1);
   return false;
 }
 
@@ -171,18 +177,18 @@ void Inner_Node::print_keys() {
   cout << endl;
 }
 
-void Inner_Node::print_r(int depth) {
+string Inner_Node::print_r(int depth) {
   string padding(depth * 2, ' ');
   ostringstream oss;
   oss << padding << "Inner(" << unique_id << "): (";
   for (auto& k : keys) {
     oss << k << ", ";
   }
-  oss << ")->{";
-  safe_cout(oss.str());
+  oss << ")->{\n";
   for (auto& v : values) {
-    v->print_r(depth+1);
+    oss << v->print_r(depth+1) << "\n";
   }
-  safe_cout("} ");
+  oss << "} ";
+  return oss.str();
 }
 

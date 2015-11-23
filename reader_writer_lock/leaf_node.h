@@ -28,7 +28,7 @@ public:
   /*  Add the argument vector to the nodes internal elements vecotr */
   void add_vector(std::list<std::tuple<int, int>>);
   /*  Print the elements, with spacing based on the int arg */
-  void print_r(int);
+  std::string print_r(int);
   /* Print all the keys stored in elements vector */
   std::string  print_keys();
   bool can_split();

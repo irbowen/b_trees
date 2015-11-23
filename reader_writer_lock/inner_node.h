@@ -29,7 +29,7 @@ public:
   void add_vector_nodes(std::list<Node*>);
   void add_key(int);
   void print_keys();
-  void print_r(int);
+  std::string print_r(int);
   bool can_split();
 };
 

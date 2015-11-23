@@ -3,6 +3,9 @@
 using namespace std;
 
 void Sequential_Tree::insert(int key, int value) {
+  ostringstream oss;
+  oss << "INSERTiNG KEY: " << key << "\n";
+  safe_cout(oss.str());
   //Wory about splitting here too
   Node_key temp;
   //If this returns true, than that means the root has been split
@@ -24,8 +27,10 @@ void Sequential_Tree::insert(int key, int value) {
 }
 
 void Sequential_Tree::print_all() {
-  cout << "\n==PRINT ALL==\n";
-  root->print_r(1);
-  cout << "\n" << endl;
+  ostringstream oss;
+  oss << "\n==PRINT ALL==\n";
+  oss << root->print_r(1);
+  oss << "\n" << endl;
+  safe_cout(oss.str());
 }
 

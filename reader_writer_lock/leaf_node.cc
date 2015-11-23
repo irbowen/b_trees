@@ -11,7 +11,7 @@ Leaf_Node::Leaf_Node() {
 }
 
 bool Leaf_Node::can_split() {
-  if (elements.size() + 1 >= DATA_SLOTS) {
+  if (elements.size() >= DATA_SLOTS) {
     return true;
   }
   return false;
@@ -69,14 +69,14 @@ void Leaf_Node::add_vector(list<tuple<int, int>> v) {
 
 /*  Prints all the keys of the elements stored in this leaf node for debugging 
     NOTE: NOT THREAD SAFE*/
-void Leaf_Node::print_r(int depth) {
+string Leaf_Node::print_r(int depth) {
   ostringstream oss;
   string padding(depth * 2, ' ');
   //cout << padding << "Leaf(" << unique_id << "): [";
   oss  << padding << "Leaf(): [";
   oss << print_keys();
   oss << "]";
-  safe_cout(oss.str());
+  return oss.str();
 }
 
 /*  Print all the keys in stored in this leaf node 
