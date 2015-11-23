@@ -70,17 +70,21 @@ void Leaf_Node::add_vector(list<tuple<int, int>> v) {
 /*  Prints all the keys of the elements stored in this leaf node for debugging 
     NOTE: NOT THREAD SAFE*/
 void Leaf_Node::print_r(int depth) {
+  ostringstream oss;
   string padding(depth * 2, ' ');
   //cout << padding << "Leaf(" << unique_id << "): [";
-  cout << padding << "Leaf(): [";
-  print_keys();
-  cout << "]";
+  oss  << padding << "Leaf(): [";
+  oss << print_keys();
+  oss << "]";
+  safe_cout(oss.str());
 }
 
 /*  Print all the keys in stored in this leaf node 
     NOTE: NOT THREAD SAFE*/
-void Leaf_Node::print_keys() {
+string Leaf_Node::print_keys() {
+  ostringstream oss; 
   for (auto& e : elements) {
-    cout << get<0>(e) << ", ";
+    oss << get<0>(e) << ", ";
   }
+  return oss.str();
 }

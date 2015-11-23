@@ -8,6 +8,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "helper.h"
+
 /*  Maxiumum number of data slots in leaf nodes */
 const size_t DATA_SLOTS = 8;
 

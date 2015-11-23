@@ -21,31 +21,25 @@ bool Inner_Node::can_split() {
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /*  So, we want to get an exlusive lock at first */ 
   node_mutex.lock();
-  cout << "The node mutex is now locked\n";
   bool inserted = false, child_can_split = false;
   /*  What is this values_post */ 
   auto this_value = begin(values);
   auto this_key = begin(keys);
   /*  If this key is less than or eqal to the current, 
       we want to insert into its left(down) child */
-  cout << "About to loop through each key\n";
   for (; this_key != end(keys); this_key++, this_value++) {
     /*  We want to see if this is the key */
-    cout << "In this here for loop\n";
+    safe_cout("In this here for loop");
     if (key <= *this_key) {
-      cout << "Key is less than\n";
       child_can_split = (*this_value)->can_split();
-      cout << "Found the node to insert on. Child can split: " << child_can_split << endl;
       if (!child_can_split) {
-        cout << "Okay, i'm trying to upgrade this lock\n";
+        safe_cout("Okay, i'm trying to downgrad this lock, since it can't split");
         m.lock();
-        cout << "So, I can lock m\n";
         node_mutex.unlock();
-        cout << "And I was able to unlock the exlusive lock\n";
         node_mutex.lock_shared();
         m.unlock();
       }
-      /*  So, is it expensive to grab the write lock first, and then maybe downgrade?
+     /*  So, is it expensive to grab the write lock first, and then maybe downgrade?
           Well, yes - but its correct.  We at first need to find the node to insert on, and 
           we know nothing about the node.  Once we KNOW FOR SURE THAT ITS SAFE, we can downgrade
           to a shared lock. */
@@ -57,6 +51,14 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /*  Probably need the same code from above ^^^, down here */
   auto max_key = std::max_element(begin(keys), end(keys));
   if (!inserted && key > *max_key) {
+      child_can_split = (*this_value)->can_split();
+      if (!child_can_split) {
+        safe_cout("Okay, i'm trying to upgrade this lock END END END");
+        m.lock();
+        node_mutex.unlock();
+        node_mutex.lock_shared();
+        m.unlock();
+      }
     add_to_child(this_value, key, value);
     inserted = true;
   }
@@ -176,12 +178,11 @@ void Inner_Node::print_r(int depth) {
   for (auto& k : keys) {
     oss << k << ", ";
   }
-  oss << ")->{\n";
-  cout << oss.str();
+  oss << ")->{";
+  safe_cout(oss.str());
   for (auto& v : values) {
     v->print_r(depth+1);
-    cout << endl;
   }
-  cout << padding  << "} ";
+  safe_cout("} ");
 }
 
