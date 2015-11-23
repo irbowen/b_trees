@@ -42,9 +42,9 @@ void Reader_Writer_Lock::write_unlock() {
     and then remove our reader count and become a writer */
 void Reader_Writer_Lock::upgrade_lock() {
   std::unique_lock<std::mutex> lock(m);
-  while (read_count > 1) {
+  read_count--;
+  while (read_count > 0) {
     cv.wait(lock);
   }
-  read_count--;
   write_flag = true;
 }
