@@ -19,51 +19,47 @@ bool Inner_Node::can_split() {
 
 /*  Return true if this nodes splits, false if not  */
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
-  /*  We don't even need to worry about this now - parent calls this for us.*/
-  /*  If this is the very first Inner_Node in the tree, we have to do some setup */
-  /*  if (keys.size() == 0) {
-        create_first_node(key, value);
-        return false;
-      }  */
-  
+  /*  So, we want to get an exlusive lock at first */ 
   node_mutex.lock();
-  //node_lock.read_lock();
-  bool inserted = false;
-  auto values_post = begin(values);
+  cout << "The node mutex is now locked\n";
+  bool inserted = false, child_can_split = false;
+  /*  What is this values_post */ 
+  auto this_value = begin(values);
   auto this_key = begin(keys);
-  for (; this_key != end(keys); this_key++, values_post++) {
+  /*  If this key is less than or eqal to the current, 
+      we want to insert into its left(down) child */
+  cout << "About to loop through each key\n";
+  for (; this_key != end(keys); this_key++, this_value++) {
+    /*  We want to see if this is the key */
+    cout << "In this here for loop\n";
     if (key <= *this_key) {
-        if ((*values_post)->can_split()) {
-          cout << "Okay, i'm trying to upgrade this lock\n";
-          //node_lock.upgrade_lock();
-          m.lock();
-          node_mutex.unlock();
-          node_mutex.lock_shared();
-          m.unlock();
-        }
-        add_to_child(values_post, key, value);
-        //std::cout << "Node: " << i << "key, key compare: " << key << ", " << keys.at(i) << " "<< std::endl;
-        inserted = true;
-        // std::cout << " Inserted key into this innner node\n" << std::endl;
-        break;
+      cout << "Key is less than\n";
+      child_can_split = (*this_value)->can_split();
+      cout << "Found the node to insert on. Child can split: " << child_can_split << endl;
+      if (!child_can_split) {
+        cout << "Okay, i'm trying to upgrade this lock\n";
+        m.lock();
+        cout << "So, I can lock m\n";
+        node_mutex.unlock();
+        cout << "And I was able to unlock the exlusive lock\n";
+        node_mutex.lock_shared();
+        m.unlock();
       }
-    }
-
-    auto max_key = std::max_element(begin(keys), end(keys));
-  //  std::cout << "Max key: " << *max_key << std::endl;
-    if (!inserted && key > *max_key) {
-      //auto min_index = std::min(keys.size(), FAN_OUT);
-     // std::cout << "FANOUT, key size: " << FAN_OUT << " " << keys.size() << std::endl;
-   //      std::cout << "Node: " << keys.size() << "key, key compare: " << key << ", " << keys.at(keys.size()-1) << " "<< std::endl;
-      add_to_child(values_post, key, value);
-//      std::cout << "Had to add it at the end of the inner node\n" << std::endl;
-      //std::cout << "inserting at end\n" <<std::endl;
+      /*  So, is it expensive to grab the write lock first, and then maybe downgrade?
+          Well, yes - but its correct.  We at first need to find the node to insert on, and 
+          we know nothing about the node.  Once we KNOW FOR SURE THAT ITS SAFE, we can downgrade
+          to a shared lock. */
+      add_to_child(this_value, key, value);
       inserted = true;
+      break;
     }
-    if (!inserted)
-      cout << "ABORT: SOMETHING HAS GONE VERY WRONG\n";
-    // cout << "--Sent request to child for key " << key << "\n";
-  //}
+  }
+  /*  Probably need the same code from above ^^^, down here */
+  auto max_key = std::max_element(begin(keys), end(keys));
+  if (!inserted && key > *max_key) {
+    add_to_child(this_value, key, value);
+    inserted = true;
+  }
   if (keys.size() >= FAN_OUT) {
     //std::cout << "--IN:AKVP::Splitting inner node\n";
     auto mid_point = FAN_OUT / 2;
