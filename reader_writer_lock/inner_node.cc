@@ -62,6 +62,12 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     add_to_child(this_value, key, value);
     inserted = true;
   }
+  if (!child_can_split) {
+    safe_cout("Child cannot split\n");
+  }
+  if (keys.size() < FAN_OUT) {
+    safe_cout("Keys size is less than fannout\n");
+  }
   if (!child_can_split && keys.size() < FAN_OUT ) {
     safe_cout("Unlocking shared and returning\n");
     node_mutex.unlock_shared();
