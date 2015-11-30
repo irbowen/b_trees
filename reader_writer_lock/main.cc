@@ -10,7 +10,7 @@ using namespace std;
 
 const int NUM_TEST = 100;
 
-const int MOD_FACTOR = 10000;
+const int MOD_FACTOR = 1000;
 
 Sequential_Tree st;
 

@@ -11,7 +11,7 @@ Leaf_Node::Leaf_Node() {
 }
 
 bool Leaf_Node::can_split() {
-  if (elements.size() >= DATA_SLOTS) {
+  if (elements.size() + 1 >= DATA_SLOTS) {
     return true;
   }
   return false;

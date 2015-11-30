@@ -11,7 +11,7 @@ Inner_Node::Inner_Node() {
 
 /*  How thread safe does this need to be? */
 bool Inner_Node::can_split() {
-  if (keys.size() >= FAN_OUT) {
+  if (keys.size() + 1 >= FAN_OUT) {
     return true;
   }
   return false;
@@ -20,11 +20,16 @@ bool Inner_Node::can_split() {
 /*  Return true if this nodes splits, false if not  */
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /*  So, we want to get an exlusive lock at first */ 
-  node_mutex.lock();
+  //  node_mutex.lock();
+  unique_lock<shared_timed_mutex> e_lock(node_mutex);
+  //  We don't want to lock this yet
+  shared_lock<shared_timed_mutex> s_lock(node_mutex, defer_lock);
+  
   bool inserted = false, child_can_split = false;
   /*  What is this values_post */ 
   auto this_value = begin(values);
   auto this_key = begin(keys);
+  size_t temp_value{0}, temp_value_end{0}, new_value{0}, new_value_end{0};
   /*  If this key is less than or eqal to the current, 
       we want to insert into its left(down) child */
   for (; this_key != end(keys); this_key++, this_value++) {
@@ -34,15 +39,17 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       if (!child_can_split) {
         safe_cout("Okay, i'm trying to downgrad this lock, since it can't split");
         m.lock();
-        node_mutex.unlock();
-        node_mutex.lock_shared();
+        e_lock.unlock();
+        s_lock.lock();
         m.unlock();
       }
      /*  So, is it expensive to grab the write lock first, and then maybe downgrade?
           Well, yes - but its correct.  We at first need to find the node to insert on, and 
           we know nothing about the node.  Once we KNOW FOR SURE THAT ITS SAFE, we can downgrade
           to a shared lock. */
+      temp_value = keys.size();
       add_to_child(this_value, key, value);
+      new_value = keys.size();
       inserted = true;
       break;
     }
@@ -50,30 +57,44 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /*  Probably need the same code from above ^^^, down here */
   //  auto max_key = std::max_element(begin(keys), end(keys));
   if (!inserted) { // && key > *max_key) {
-    safe_cout("In this here end case");  
     child_can_split = (*this_value)->can_split();
-      if (!child_can_split) {
-        safe_cout("Downgrading to shared_lock in END case");
-        m.lock();
-        node_mutex.unlock();
-        node_mutex.lock_shared();
-        m.unlock();
-      }
+    if (!child_can_split) {
+      safe_cout("Downgrading to shared_lock in END case");
+      m.lock();
+      e_lock.unlock();
+      s_lock.lock();
+      m.unlock();
+    }
+    temp_value_end = keys.size();
     add_to_child(this_value, key, value);
+    new_value_end = keys.size();
     inserted = true;
   }
   if (!child_can_split) {
-    safe_cout("Child cannot split\n");
+    ostringstream temp_oss;
+    temp_oss << "Child cannot split.  Keys size is: " << keys.size() << "\n";
+    for (auto& k : keys) {
+      temp_oss << k << " ";
+    }
+    temp_oss << "\n";
+    safe_cout(temp_oss.str());
   }
-  if (keys.size() < FAN_OUT) {
-    safe_cout("Keys size is less than fannout\n");
-  }
-  if (!child_can_split && keys.size() < FAN_OUT ) {
-    safe_cout("Unlocking shared and returning\n");
-    node_mutex.unlock_shared();
+  if (!child_can_split) {
+    ostringstream temp_oss1;
+    temp_oss1 << "Unlocking shared and returning\n" 
+        << "!child_can_split before after key size: " << temp_value << " " << new_value << endl
+        << "!child_can_split (end case) before after key size: " << temp_value_end << " " << new_value_end << endl;
+    safe_cout(temp_oss1.str());
+    assert(s_lock.owns_lock());
     return false;
   }
-  if (keys.size() >= FAN_OUT && child_can_split) {
+  if (child_can_split && keys.size() < FAN_OUT ) {
+    safe_cout("Unlocking exlusive and returning\n");
+    assert(e_lock.owns_lock());
+    return false;
+  }
+  if (child_can_split) {
+    assert(e_lock.owns_lock());
     //std::cout << "--IN:AKVP::Splitting inner node\n";
     auto mid_point = FAN_OUT / 2;
     auto keys_it = begin(keys);
@@ -82,7 +103,7 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       keys_it++;
       value_it++;
     }
-    /*  So then this is our key */
+    /*  So then this IS our key */
     auto new_key = *keys_it;
     keys_it++; value_it++;
     
