@@ -25,6 +25,7 @@ void Tree::insert(int key, int value) {
   }
 
   if (root->add_key_value_pair(key, value, temp)) {
+    safe_cout("Root is splitting\n");
     assert(e_lock.owns_lock());
     assert(!s_lock.owns_lock());
     Inner_Node* new_root = new Inner_Node();
@@ -34,8 +35,8 @@ void Tree::insert(int key, int value) {
     new_root->add_key(temp.key);
     new_root->add_vector_nodes(new_children);
     root = new_root;
+    print_all();
   }
-  //print_all();
 }
 
 void Tree::print_all() {

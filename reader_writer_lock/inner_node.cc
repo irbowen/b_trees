@@ -11,6 +11,7 @@ Inner_Node::Inner_Node() {
 
 /*  How thread safe does this need to be? */
 bool Inner_Node::can_split() {
+  unique_lock<mutex> lock(m);
   if (keys.size() + 1 >= FAN_OUT) {
     return true;
   }
@@ -57,7 +58,12 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
         }
       }
       temp_value = keys.size();
+      ostringstream oss1; oss1 << "ChildCanSplit: " << child_can_split << "\nBefore: ";
+      for (auto& k : keys) {oss1 << k << " ";}oss1<<"\n";
       add_to_child(this_value, key, value);
+      oss1 << "After: ";
+      for (auto& k : keys) {oss1 << k << " ";}oss1<<"\nKey:" << key << "\n";
+      safe_cout(oss1.str());
       new_value = keys.size();
       inserted = true;
       break;
@@ -94,12 +100,12 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     assert(s_lock.owns_lock());
     return false;
   }
-  if (child_can_split && keys.size() < FAN_OUT ) {
+  if (child_can_split && keys.size() < FAN_OUT) {
     safe_cout("Unlocking exlusive and returning\n");
     assert(e_lock.owns_lock());
     return false;
   }
-  if (child_can_split) {
+  if (child_can_split && keys.size() >= FAN_OUT) {
     assert(e_lock.owns_lock());
     /*  We need to find the midpoint, keys, etc. */
     auto mid_point = FAN_OUT / 2;

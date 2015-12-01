@@ -11,7 +11,6 @@ class Leaf_Node : public Node {
       I was thinking disk block number - but this could be anything */  
   std::list<std::tuple<int, int>> elements;
   /*  The reader writer lock object for this object */
-  Reader_Writer_Lock node_lock;
   std::mutex m;
 public:
   /*  Left and right siblings so that we can avoid 

@@ -11,6 +11,7 @@ Leaf_Node::Leaf_Node() {
 }
 
 bool Leaf_Node::can_split() {
+  unique_lock<mutex> lock(m);
   if (elements.size() + 1 >= DATA_SLOTS) {
     return true;
   }
@@ -19,7 +20,7 @@ bool Leaf_Node::can_split() {
 
 bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /* We're clearly here to do a write */
-  node_lock.write_lock();
+  unique_lock<mutex> lock(m);
   /*  We always want to insert into this node.  We can worry about splits lates */
   elements.push_back(make_tuple(key, value));
   /*  Since this is a list, we can't just use std::sort() */
@@ -51,10 +52,8 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     right_sibling->right_sibling = temp;
     right_sibling->add_vector(right);
     /*  This could probably be released earlier, but for correctness, for now... */
-    node_lock.write_unlock();
     return true;
   }
-  node_lock.write_unlock();
   return false;
 }
 
