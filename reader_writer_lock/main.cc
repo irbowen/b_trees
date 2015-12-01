@@ -3,16 +3,16 @@
 #include <ctime>
 #include <cstdlib>
 
-#include "seq_tree.h"
+#include "tree.h"
 #include "reader_writer_lock.h"
 
 using namespace std;
 
-const int NUM_TEST = 100;
+const int NUM_TEST = 1000;
 
-const int MOD_FACTOR = 1000;
+const int MOD_FACTOR = 10000;
 
-Sequential_Tree st;
+Tree st;
 
 void insert(int arg) {
   for (int i = 0; i < arg; i++) {
@@ -26,8 +26,10 @@ void time_it(int arg) {
   start = clock();
   thread t1(insert, arg);
   thread t2(insert, arg);
+  thread t3(insert, arg);
   t1.join();
   t2.join();
+  t3.join();
   cout << (clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
   st.print_all();
 }
