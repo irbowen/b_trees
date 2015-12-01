@@ -43,43 +43,27 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     /*  We want to see if this is the key */
     if (key <= *this_key) {
       assert(!inserted);
-      child_can_split = (*this_value)->can_split();
-      if (child_can_split) {
-        safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
-        if (m.try_lock()) {
+      if (m.try_lock()) {
+        child_can_split = (*this_value)->can_split();
+        if (child_can_split) {
+          safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
           s_lock.unlock();
           e_lock.lock();
-          m.unlock();
         }
         else {
-          s_lock.unlock();
-          safe_cout("I couldn't get the lock, so I'm calling the function again\n");
-          return add_key_value_pair(key, value, node_key);
+          safe_cout("Maintaining shared lock");
         }
-      }
-      temp_value = keys.size();
-      ostringstream oss1; oss1 << "ChildCanSplit: " << child_can_split << "\nBefore: ";
-      for (auto& k : keys) {oss1 << k << " ";}oss1<<"\n";
-      add_to_child(this_value, key, value);
-      oss1 << "After: ";
-      for (auto& k : keys) {oss1 << k << " ";}oss1<<"\nKey:" << key << "\n";
-      safe_cout(oss1.str());
-      new_value = keys.size();
-      inserted = true;
-      break;
-    }
-  }
-  /*  Probably need the same code from above ^^^, down here */
-  //  auto max_key = std::max_element(begin(keys), end(keys));
-  if (!inserted) { // && key > *max_key) {
-    assert(s_lock.owns_lock());
-    child_can_split = (*this_value)->can_split();
-    if (child_can_split) {
-      safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
-      if (m.try_lock()) {
-        s_lock.unlock();
-        e_lock.lock();
+        temp_value = keys.size();
+        //ostringstream oss1; oss1 << "ChildCanSplit: " << child_can_split << "\nBefore: ";
+        //for (auto& k : keys) {oss1 << k << " ";}oss1<<"\n";
+        add_to_child(this_value, key, value);
+        //oss1 << "After: ";
+        //for (auto& k : keys) {oss1 << k << " ";}oss1<<"\nKey:" << key << "\n";
+        //safe_cout(oss1.str());
+        new_value = keys.size();
+        inserted = true;
         m.unlock();
+        break;
       }
       else {
         s_lock.unlock();
@@ -87,11 +71,35 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
         return add_key_value_pair(key, value, node_key);
       }
     }
-    temp_value_end = keys.size();
-    add_to_child(this_value, key, value);
-    new_value_end = keys.size();
-    inserted = true;
   }
+  /*  Probably need the same code from above ^^^, down here */
+  //  auto max_key = std::max_element(begin(keys), end(keys));
+  if (!inserted) { // && key > *max_key) {
+    assert(s_lock.owns_lock());
+    assert(this_key == end(keys));
+    if (m.try_lock()) {
+      child_can_split = (*this_value)->can_split();
+      if (child_can_split) {
+        safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
+        s_lock.unlock();
+        e_lock.lock();
+      }
+      else {
+        safe_cout("Maintinng shared");
+      }
+      temp_value_end = keys.size();
+      add_to_child(this_value, key, value);
+      new_value_end = keys.size();
+      inserted = true;
+      m.unlock();
+    }
+    else {
+      s_lock.unlock();
+      safe_cout("I couldn't get the lock, so I'm calling the function again\n");
+      return add_key_value_pair(key, value, node_key);
+    }
+  }
+  
   assert(inserted);
   if (!child_can_split) {
     /*  We want to make sure the values have not changed, if the child could not have split */
