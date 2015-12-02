@@ -1,5 +1,6 @@
 #include "inner_node.h"
 #include "leaf_node.h"
+#include <typeinfo>
 
 using namespace std;
 
@@ -7,6 +8,15 @@ using namespace std;
 /*  Just assinged the node's unique_id... Nothing else to do */
 Inner_Node::Inner_Node() {
   unique_id = Node::get_counter();
+}
+
+void Inner_Node::reset() {
+  keys.clear();
+  values.clear();
+}
+
+bool Inner_Node::is_inner() {
+  return true;
 }
 
 /*  How thread safe does this need to be? */
@@ -36,23 +46,22 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   size_t temp_value{0}, temp_value_end{0}, new_value{0}, new_value_end{0};
   /*  If this key is less than or eqal to the current, 
       we want to insert into its left(down) child */
+  assert(*this_value);
+  assert(*this_key);
   for (; this_key != end(keys); this_key++, this_value++) {
     /*  We want to see if this is the key */
     if (key <= *this_key) {
       assert(!inserted);
       if (m.try_lock()) {
+        //assert(*this_value);
+        assert((*this_value) != nullptr);
         child_can_split = (*this_value)->can_split();
         if (child_can_split) {
           s_lock.unlock();
           e_lock.lock();
         }
         temp_value = keys.size();
-        //ostringstream oss1; oss1 << "ChildCanSplit: " << child_can_split << "\nBefore: ";
-        //for (auto& k : keys) {oss1 << k << " ";}oss1<<"\n";
         add_to_child(this_value, key, value);
-        //oss1 << "After: ";
-        //for (auto& k : keys) {oss1 << k << " ";}oss1<<"\nKey:" << key << "\n";
-        //safe_cout(oss1.str());
         new_value = keys.size();
         inserted = true;
         m.unlock();
@@ -72,14 +81,14 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     assert(s_lock.owns_lock());
     assert(this_key == end(keys));
     if (m.try_lock()) {
+      //assert(*this_value);
+      //assert(this_value != end(values));
+      //assert(this_value == end(values));
       child_can_split = (*this_value)->can_split();
       if (child_can_split) {
         safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
         s_lock.unlock();
         e_lock.lock();
-      }
-      else {
-        safe_cout("Maintinng shared");
       }
       temp_value_end = keys.size();
       add_to_child(this_value, key, value);
@@ -109,6 +118,7 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     return false;
   }
   if (child_can_split && keys.size() >= FAN_OUT) {
+    assert((temp_value_end != new_value_end) || (temp_value != new_value));
     assert(e_lock.owns_lock());
     /*  We need to find the midpoint, keys, etc. */
     auto mid_point = FAN_OUT / 2;
@@ -127,6 +137,17 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     /*  Change this node to be the new left node */
     keys.resize(mid_point+1);
     values.resize(mid_point+1);
+    auto type_tester = *begin(values);
+    if (type_tester->is_inner()) {
+      values.push_back(new Inner_Node());
+    }
+    else {
+      values.push_back(new Leaf_Node());
+    }
+    //Node* new_value = new decltype(*end(values));
+    //values.push_back(new_value);
+    //auto last_element = *(end(values));
+    //last_element->reset();
     /*  Add everything over into the new inner node */
     Inner_Node* right_inner_node = new Inner_Node();
     right_inner_node->add_vector_keys(right_keys);
@@ -152,13 +173,21 @@ void Inner_Node::add_to_child(list<Node*>::iterator index, int key, int value) {
       keys.push_back(temp.key);
       values.push_back(temp.node);
     }
+    else if (keys_it == begin(keys)) {
+      keys.push_front(temp.key);
+      values.push_front(temp.node);
+    }
     /*  If we can find it, that is where we have to insert */
     else {
       auto dist = distance(keys_it, begin(keys));
       auto value_it = begin(values);
-      for (auto i = 0; i < dist; i++) {value_it++;} 
-      keys.insert(keys_it, temp.key);
+      for (auto i = 0; i <= dist+1; i++) {value_it++;} 
+        auto values_dist = distance(value_it, begin(values));
       index++;
+      auto third_distance = distance(index, begin(values));
+      cout << "Dist" << dist << " values dist " << values_dist << "Index 3rd distance: " << third_distance << endl;
+      assert(third_distance == dist);
+      keys.insert(keys_it, temp.key);
       values.insert(index, temp.node);
     }
   }

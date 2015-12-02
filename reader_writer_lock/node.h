@@ -12,10 +12,10 @@
 #include "helper.h"
 
 /*  Maxiumum number of data slots in leaf nodes */
-const size_t DATA_SLOTS = 14;
+const size_t DATA_SLOTS = 6;
 
 /*  Maximum number of children in inner nodes */
-const size_t FAN_OUT = 14;
+const size_t FAN_OUT = 6;
 
 /* Forward declaration to make the compiler happy */
 class Node;
@@ -34,6 +34,8 @@ public:
   int get_counter();
   virtual bool can_split() = 0;
   virtual bool add_key_value_pair(int, int, Node_key&) = 0;
+  virtual void reset() = 0;
+  virtual bool is_inner() = 0;
   /*  In Inner_Nodes, this will call thsi function for each node below it
       For Leaf Nodes, this will print out all the keys */
   virtual std::string  print_r(int) = 0;

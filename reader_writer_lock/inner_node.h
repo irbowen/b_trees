@@ -6,6 +6,7 @@
 #include <thread>
 #include <shared_mutex>
 #include <chrono>
+#include <typeinfo>
 
 #include "node.h"
 #include "reader_writer_lock.h"
@@ -31,6 +32,8 @@ public:
   void print_keys();
   std::string print_r(int);
   bool can_split();
+  bool is_inner();
+  void reset();
 };
 
 #endif

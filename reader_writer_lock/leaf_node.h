@@ -31,6 +31,8 @@ public:
   /* Print all the keys stored in elements vector */
   std::string  print_keys();
   bool can_split();
+  void reset();
+  bool is_inner();
 };
 
 #endif

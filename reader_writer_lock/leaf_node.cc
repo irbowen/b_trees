@@ -10,6 +10,12 @@ Leaf_Node::Leaf_Node() {
   //unique_id = Node::get_counter();
 }
 
+void Leaf_Node::reset() {
+  left_sibling = nullptr;
+  right_sibling = nullptr;
+  elements.clear();
+}
+
 bool Leaf_Node::can_split() {
   if (elements.size() + 1 >= DATA_SLOTS) {
     return true;
@@ -85,4 +91,8 @@ string Leaf_Node::print_keys() {
     oss << get<0>(e) << ", ";
   }
   return oss.str();
+}
+
+bool Leaf_Node::is_inner() {
+  return false;
 }
