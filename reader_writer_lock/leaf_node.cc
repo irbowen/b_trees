@@ -11,7 +11,6 @@ Leaf_Node::Leaf_Node() {
 }
 
 bool Leaf_Node::can_split() {
-  unique_lock<mutex> lock(m);
   if (elements.size() + 1 >= DATA_SLOTS) {
     return true;
   }

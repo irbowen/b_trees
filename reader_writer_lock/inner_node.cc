@@ -20,9 +20,6 @@ bool Inner_Node::can_split() {
 
 /*  Return true if this nodes splits, false if not  */
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
-  /*  So, we want to get an exlusive lock at first */ 
-  //  node_mutex.lock();
-
   /*  These locks:
       - Protect from any exceptions
       - Make sure the mutex is unlocked after the function call
@@ -46,12 +43,8 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       if (m.try_lock()) {
         child_can_split = (*this_value)->can_split();
         if (child_can_split) {
-          safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
           s_lock.unlock();
           e_lock.lock();
-        }
-        else {
-          safe_cout("Maintaining shared lock");
         }
         temp_value = keys.size();
         //ostringstream oss1; oss1 << "ChildCanSplit: " << child_can_split << "\nBefore: ";
@@ -66,7 +59,8 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
         break;
       }
       else {
-        s_lock.unlock();
+        assert(s_lock.owns_lock());
+        //s_lock.unlock();
         safe_cout("I couldn't get the lock, so I'm calling the function again\n");
         return add_key_value_pair(key, value, node_key);
       }
@@ -94,7 +88,8 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       m.unlock();
     }
     else {
-      s_lock.unlock();
+      //s_lock.unlock();
+      assert(s_lock.owns_lock());
       safe_cout("I couldn't get the lock, so I'm calling the function again\n");
       return add_key_value_pair(key, value, node_key);
     }
