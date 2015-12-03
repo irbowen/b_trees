@@ -36,7 +36,7 @@ void Tree::insert(int key, int value) {
     safe_cout("I couldn't get the lock, so I'm calling the function again\n");
     return insert(key, value);
   } */
-  print_all();
+//  print_all();
 }
 
 void Tree::print_all() {

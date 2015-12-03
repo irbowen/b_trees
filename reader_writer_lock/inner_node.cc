@@ -84,16 +84,33 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       //assert(*this_value);
       //assert(this_value != end(values));
       //assert(this_value == end(values));
-      child_can_split = (*this_value)->can_split();
-      if (child_can_split) {
-        safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
+      if (this_value != end(values)) {
+        assert(values.size() > keys.size());
+        child_can_split = (*this_value)->can_split();
+        if (child_can_split) {
+          safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
+          s_lock.unlock();
+          e_lock.lock();
+        }
+        temp_value_end = keys.size();
+        add_to_child(this_value, key, value);
+        new_value_end = keys.size();
+        inserted = true;
+      }
+      else {
+        assert(false);
+        assert(keys.size() == values.size());
+        /*  A new child is being added, so the parent node needs an e lock */
+        child_can_split = true;
         s_lock.unlock();
         e_lock.lock();
+        keys.push_back(key);
+        values.push_back(new Leaf_Node());
+        auto value_it = values.end();
+        value_it--;
+        add_to_child(value_it, key, value);
+        inserted = true;
       }
-      temp_value_end = keys.size();
-      add_to_child(this_value, key, value);
-      new_value_end = keys.size();
-      inserted = true;
       m.unlock();
     }
     else {
@@ -137,13 +154,17 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     /*  Change this node to be the new left node */
     keys.resize(mid_point+1);
     values.resize(mid_point+1);
-    auto type_tester = *begin(values);
+    /*  Old code from when I was trying to add the nodes here */
+    /* auto type_tester = *begin(values);
     if (type_tester->is_inner()) {
       values.push_back(new Inner_Node());
     }
     else {
-      values.push_back(new Leaf_Node());
+    */
+    values.push_back(new Leaf_Node());
+    /*
     }
+    */
     //Node* new_value = new decltype(*end(values));
     //values.push_back(new_value);
     //auto last_element = *(end(values));
@@ -168,7 +189,8 @@ void Inner_Node::add_to_child(list<Node*>::iterator index, int key, int value) {
   Node_key temp;
   if ((*index)->add_key_value_pair(key, value, temp)) {
     /*  Search for the key.  If we can't find it, add to the end */ 
-    auto keys_it = upper_bound(begin(keys), end(keys), key);
+    //  auto keys_it = upper_bound(begin(keys), end(keys), key);
+    auto keys_it = lower_bound(begin(keys), end(keys), temp.key);
     if (keys_it == end(keys)) {
       keys.push_back(temp.key);
       values.push_back(temp.node);
@@ -179,14 +201,16 @@ void Inner_Node::add_to_child(list<Node*>::iterator index, int key, int value) {
     }
     /*  If we can find it, that is where we have to insert */
     else {
+      cout << "Size of keys: " << keys.size() << endl;
+      for (auto& k : keys) {cout << k << " ";} cout << endl;
       auto dist = distance(keys_it, begin(keys));
       auto value_it = begin(values);
-      for (auto i = 0; i <= dist+1; i++) {value_it++;} 
+      for (auto i = 0; i < dist; i++) {value_it++;} 
         auto values_dist = distance(value_it, begin(values));
       index++;
       auto third_distance = distance(index, begin(values));
-      cout << "Dist" << dist << " values dist " << values_dist << "Index 3rd distance: " << third_distance << endl;
-      assert(third_distance == dist);
+      cout << "Dist: " << dist << " ValuesDist: " << values_dist << " IndexDist: " << third_distance << endl;
+      //assert(third_distance == dist);
       keys.insert(keys_it, temp.key);
       values.insert(index, temp.node);
     }
