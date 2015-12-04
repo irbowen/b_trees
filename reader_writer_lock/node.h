@@ -12,10 +12,10 @@
 #include "helper.h"
 
 /*  Maxiumum number of data slots in leaf nodes */
-const size_t DATA_SLOTS = 6;
+const size_t DATA_SLOTS = 16;
 
 /*  Maximum number of children in inner nodes */
-const size_t FAN_OUT = 6;
+const size_t FAN_OUT = 16;
 
 /* Forward declaration to make the compiler happy */
 class Node;

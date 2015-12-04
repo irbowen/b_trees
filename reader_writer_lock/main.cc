@@ -8,16 +8,16 @@
 
 using namespace std;
 
-const int NUM_TEST = 1000;
+const int NUM_TEST = 100000;
 
-const int MOD_FACTOR = 100000;
+const int MOD_FACTOR = 1000000;
 
 Tree st;
 
 void insert(int arg) {
   for (int i = 0; i < arg; i++) {
     auto temp = rand() % MOD_FACTOR;
-    st.insert(temp, i*2);
+    st.insert2(temp, i*2);
   }
 }
 
@@ -27,11 +27,18 @@ void time_it(int arg) {
   thread t1(insert, arg);
   thread t2(insert, arg);
   thread t3(insert, arg);
+  thread t4(insert, arg);
+  thread t5(insert, arg);
+  thread t6(insert, arg);
   t1.join();
   t2.join();
   t3.join();
-  cout << (clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
+  t4.join();
+  t5.join();
+  t6.join();
+  auto time_taken = clock() - start; 
   st.print_all();
+  cout << "Time: " << time_taken / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
 }
 
 int main() {

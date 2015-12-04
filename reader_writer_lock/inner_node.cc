@@ -69,8 +69,8 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       }
       else {
         assert(s_lock.owns_lock());
-        //s_lock.unlock();
-        safe_cout("I couldn't get the lock, so I'm calling the function again\n");
+        s_lock.unlock();
+        //safe_cout("I couldn't get the lock, so I'm calling the function again\n");
         return add_key_value_pair(key, value, node_key);
       }
     }
@@ -88,7 +88,7 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
         assert(values.size() > keys.size());
         child_can_split = (*this_value)->can_split();
         if (child_can_split) {
-          safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
+          //safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
           s_lock.unlock();
           e_lock.lock();
         }
@@ -114,9 +114,9 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       m.unlock();
     }
     else {
-      //s_lock.unlock();
       assert(s_lock.owns_lock());
-      safe_cout("I couldn't get the lock, so I'm calling the function again\n");
+      s_lock.unlock();
+     // safe_cout("I couldn't get the lock, so I'm calling the function again\n");
       return add_key_value_pair(key, value, node_key);
     }
   }
@@ -130,7 +130,7 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     return false;
   }
   if (child_can_split && keys.size() < FAN_OUT) {
-    safe_cout("Unlocking exlusive and returning\n");
+    //safe_cout("Unlocking exlusive and returning\n");
     assert(e_lock.owns_lock());
     return false;
   }
@@ -201,15 +201,15 @@ void Inner_Node::add_to_child(list<Node*>::iterator index, int key, int value) {
     }
     /*  If we can find it, that is where we have to insert */
     else {
-      cout << "Size of keys: " << keys.size() << endl;
-      for (auto& k : keys) {cout << k << " ";} cout << endl;
+      //cout << "Size of keys: " << keys.size() << endl;
+      //for (auto& k : keys) {cout << k << " ";} cout << endl;
       auto dist = distance(keys_it, begin(keys));
       auto value_it = begin(values);
       for (auto i = 0; i < dist; i++) {value_it++;} 
-        auto values_dist = distance(value_it, begin(values));
+      //  auto values_dist = distance(value_it, begin(values));
       index++;
-      auto third_distance = distance(index, begin(values));
-      cout << "Dist: " << dist << " ValuesDist: " << values_dist << " IndexDist: " << third_distance << endl;
+      //auto third_distance = distance(index, begin(values));
+      //cout << "Dist: " << dist << " ValuesDist: " << values_dist << " IndexDist: " << third_distance << endl;
       //assert(third_distance == dist);
       keys.insert(keys_it, temp.key);
       values.insert(index, temp.node);

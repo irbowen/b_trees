@@ -6,6 +6,7 @@
 #include <iostream>
 #include <mutex>
 
+#include "leaf_node.h"
 #include "inner_node.h"
 #include "reader_writer_lock.h"
 
@@ -19,6 +20,7 @@ public:
     root->create_first_node(1, 1);
   }
   void insert(int, int);
+  void insert2(int, int);
   void split();
   void print_all();
 };
