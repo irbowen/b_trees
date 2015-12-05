@@ -1,0 +1,57 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: sig-alternate-sample.aux
+The style file: plain.bst
+Database file #1: mybib.bib
+Too many commas in name 1 of "Michael A. Bender, Jermey T. Fineman, Seth Gilbert, Bradely C. Kuszmaul" for entry bender:cache
+while executing---line 1049 of file plain.bst
+Name 1 in "Sung-Chae Lim, Joonseon Ahn, and Myoung Ho Kim" has a comma at the end for entry lim:blink
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Michael A. Bender, Jermey T. Fineman, Seth Gilbert, Bradely C. Kuszmaul" for entry bender:cache
+while executing---line 1090 of file plain.bst
+Warning--empty journal in bender:cache
+Name 1 in "Sung-Chae Lim, Joonseon Ahn, and Myoung Ho Kim" has a comma at the end for entry lim:blink
+while executing---line 1090 of file plain.bst
+Warning--empty journal in lim:blink
+You've used 5 entries,
+            2118 wiz_defined-function locations,
+            520 strings with 4556 characters,
+and the built_in function-call counts, 1217 in all, are:
+= -- 115
+> -- 47
+< -- 0
++ -- 21
+- -- 14
+* -- 73
+:= -- 225
+add.period$ -- 15
+call.type$ -- 5
+change.case$ -- 22
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 51
+empty$ -- 98
+format.name$ -- 14
+if$ -- 242
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 5
+newline$ -- 28
+num.names$ -- 10
+pop$ -- 20
+preamble$ -- 1
+purify$ -- 17
+quote$ -- 0
+skip$ -- 39
+stack$ -- 0
+substring$ -- 48
+swap$ -- 3
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 20
+warning$ -- 2
+while$ -- 11
+width$ -- 6
+write$ -- 53
+(There were 4 error messages)

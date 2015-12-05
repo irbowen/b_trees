@@ -45,8 +45,8 @@
 %
 % For tracking purposes - this is V2.0 - May 2012
 
-\documentclass{sig-alternate-05-2015}
-
+\documentclass{sig-alternate}
+\usepackage{hyperref}
 
 \begin{document}
 
@@ -78,7 +78,7 @@
 %\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
 % --- End of Author Metadata ---
 
-\title{High Concurrent B-Trees for Insert Heavy Workloads}
+\title{High Concurreny B-Trees for Insert Heavy Workloads}
 \subtitle{An in-depth comparison}
 %
 % You need the command \numberofauthors to handle the 'placement
@@ -144,6 +144,7 @@ any knowledge of this author's actions.}\\
 
 \maketitle
 \begin{abstract}
+\href{http://github.com/irbowen/b_trees}{Code can be found here}
 Fill this in once we're done\\ \\
 You should try to write the best research paper that you can using the results of your project. You have read many good papers throughout this class, so by this point you should have a good idea of what makes a good research paper! Basically, your report needs to clearly present the following:
 \begin{enumerate}
@@ -219,26 +220,43 @@ They also have a host of other properties that make them also for large systems.
 \item Block access.  The strucutre can store as much data is it can on a single page, and doing locking on a single page.  This made B-Tree's very popular early on, when database's could not fit in memory, and had to be dumped onto disk.
 \end{enumerate}
 
-\subsection{Math Equations}
+\section{Plans}
+\begin{enumerate}
+\item Terminology: B+ Tree vs B*Trees
+\item 
+\end{enumerate}
 
-\subsubsection{Inline (In-text) Equations}
+\section{Architecture}
+What all did we have to build to make this work and test out our ideas?
+\begin{itemize}
+  \item{Testing Framework:} We want to test the system at different levels of
+    \begin{itemize}
+      \item Input Size
+      \item Number of THreads
+      \item Read Write Percent Workload
+      \item Fannout on inner nodes
+      \item Data slots on leaf nodes
+    \end{itemize}
+    To testing all of these things, I will be creating a dope ass main.ccp that can read input from test ases
+  \item{Sequential Tree:} We had to build a simple, single-thread B-tree first.  We built on this for our other version, and will also use it as the baseline for testing.
+  \item{ReaderWriter Tree:} This tree uses different kinds of locks, shared and exclusive, and also does checking to see if the child node can split, to see if this node is "safe" from splitting
+  \item{LockingFree Tree:} I think I'm about to start this
+  \item{BLink Tree:} This structure is different in that it insert into the leaf node, and acquires locks on the way back up
+\end{itemize}
 
 
-\subsubsection{Display Equations}
+\section{Citations}
+Some papers that we read to give ourselves background on the topics:
+\begin{itemize}
+  \item "Concurrent B-trees with Lock-free Techniques"\cite{sultana:lockfree} gives us the inspiration for the lock free B-tree.  They, however, didn't not have access to the large memory, built in C++14 atomics, and they were not focusing on writes - they were trying to build a general purpose lock free btree for NUMA computers.
+  \item "A survey of B-tree locking techniques"\cite{graefe:survey}, much like the title says, presents an over of many of the different approaches that have been taken so far.  However, it reallys skims over, almost dismissing, lock free techniques.
+  \item "Efficient Locking for Concurrent Operations on B-Trees" \cite{lehman:locking} This one gave us the idea of the \texttt{can\_split()} function, and gave background on reader writer locks and other, etc
+  \item "Concurrent Cache-Oblivious B-Trees" \cite{bender:cache} I need to read this one again
+  \item "A Concurrent Blink-Tree Algorithm Using a Cooperative Locking Protocl" \cite{lim:blink} Ryan is making this verion
+\end{itemize}
 
-
-\subsection{Citations}
-books \cite{graefe:survey} listed \cite{sultana:lockfree}
-
-\subsection{Tables}
-We will need some tables
-
-
-\subsection{Figures}
-Figures
-
-\subsection{Theorem-like Constructs}
-Theorem Like Constructs
+\section{Experimental Results}
+We will need some tables.  I have some data from the sequential tree
 
 \section{Conclusions}
 Conclusions
@@ -248,7 +266,7 @@ Conclusions
 \section{Acknowledgments}
 Acknowledgments
 
-\bibliography{mybib}{}
 \bibliographystyle{plain}
+\bibliography{mybib}
 
 \end{document}

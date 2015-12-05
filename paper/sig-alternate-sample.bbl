@@ -1,0 +1,30 @@
+\begin{thebibliography}{1}
+
+\bibitem{sultana:lockfree}
+Peter~Graham Afroza~Sultana, Helen~Cameron.
+\newblock Concurrent b-trees with lock-free techniques.
+\newblock {\em DUNNO}, 0(0), 2010.
+
+\bibitem{graefe:survey}
+Goetz Graefe.
+\newblock A survey of b-tree locking techniques.
+\newblock {\em ACM Transactions on Database Systems}, 35(2), 2010.
+
+\bibitem{lehman:locking}
+Philip~L. Lehman and S.~Bing Yao.
+\newblock Efficient locking for concurrent operations on b-trees.
+\newblock {\em ACM Transactions on Database Systems}, 6(4):650--670, December
+  1987.
+
+\bibitem{bender:cache}
+Seth Gilbert Bradely C.~Kuszmaul Michael A.~Bender, Jermey T.~Fineman.
+\newblock Concurrent cache-oblivious b-trees.
+\newblock 2005.
+
+\bibitem{lim:blink}
+Joonseon~Ahn Sung-Chae~Lim and Myoung~Ho Kim.
+\newblock A concurrent blink-tree algorithm using a cooperative locking
+  protocol.
+\newblock 2003.
+
+\end{thebibliography}
