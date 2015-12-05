@@ -9,7 +9,6 @@
 #include <typeinfo>
 
 #include "node.h"
-#include "reader_writer_lock.h"
 
 /* Class for the inner nodes in the tree */
 class Inner_Node : public Node {
@@ -20,7 +19,7 @@ public:
   Inner_Node();
   std::list<int> keys;
   std::list<Node*> values;
-
+  int get(int);
   int unique_id;
   void create_first_node(int, int);
   bool add_key_value_pair(int, int, Node_key&);

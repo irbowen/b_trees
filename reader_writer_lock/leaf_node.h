@@ -2,7 +2,6 @@
 #define LEAF_NODE_H
 
 #include "node.h"
-#include "reader_writer_lock.h"
 
 /* Class for the leaf nodes of the tree */
 class Leaf_Node : public Node {

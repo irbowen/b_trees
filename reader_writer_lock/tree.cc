@@ -2,6 +2,10 @@
 
 using namespace std;
 
+int Tree::get(int key) {
+  return root->get(key);
+}
+
 void Tree::insert(int key, int value) {
   shared_lock<shared_timed_mutex> s_lock(node_mutex);
   unique_lock<shared_timed_mutex> e_lock(node_mutex, defer_lock);

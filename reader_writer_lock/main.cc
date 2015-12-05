@@ -1,10 +1,9 @@
-#include <iostream>
+#include <iostream> 
 #include <thread>
 #include <ctime>
 #include <cstdlib>
 
 #include "tree.h"
-#include "reader_writer_lock.h"
 
 using namespace std;
 
@@ -14,41 +13,49 @@ const int MOD_FACTOR = 1000000;
 
 Tree st;
 
-void insert(int arg) {
-  for (int i = 0; i < arg; i++) {
-    auto temp = rand() % MOD_FACTOR;
-    st.insert2(temp, i*2);
+void insert(int num_test, int rand_mod_factor, int read_percent) {
+  for (int i = 0; i < num_test; i++) {
+    auto temp = rand() % rand_mod_factor;
+    if (rand() % 100 < read_percent) {
+      st.insert2(temp, i*2);
+    }
+    else {
+      st.get(temp);
+    }
   }
 }
 
-void time_it(int arg) {
+void time_it(int num_threads, int num_test, int rand_mod_factor, int read_percent) {
   clock_t start;
   start = clock();
-  thread t1(insert, arg);
-  thread t2(insert, arg);
-  thread t3(insert, arg);
-  thread t4(insert, arg);
-  thread t5(insert, arg);
-  thread t6(insert, arg);
-  t1.join();
-  t2.join();
-  t3.join();
-  t4.join();
-  t5.join();
-  t6.join();
+  
+  vector<unique_ptr<thread>> thread_vector;
+  for (auto i = 0; i < num_threads; i++) {
+    thread_vector.push_back(
+      unique_ptr<thread>(new thread(insert, num_test, rand_mod_factor, read_percent)));
+  }
+  for (auto& t : thread_vector) {
+    t->join();
+  }
+   
   auto time_taken = clock() - start; 
   st.print_all();
   cout << "Time: " << time_taken / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
 }
 
+/*  Num Threads
+    Num inputs per thread
+    Rand Factor
+    Read Percentage  
+*/
 int main() {
   cout << "Size, Time\n";
   srand(0);
- /* int shift = 7;
-  for (int i = 4; i < 1<<shift; i = i * 2) {
-    time_it(i);
-    cout << "\n~~~~~~~TRIAL~~~~~~~\n";
-  }*/
-  time_it(NUM_TEST);
+  int num_threads = 0, num_test = 0, rand_mod_factor = 0, read_percent = 0;
+  cin >> num_threads;
+  cin >> num_test;
+  cin >> rand_mod_factor;
+  cin >> read_percent;
+  time_it(num_threads, num_test, rand_mod_factor, read_percent);
   return 0;
 }

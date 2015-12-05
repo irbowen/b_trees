@@ -4,6 +4,10 @@
 
 using namespace std;
 
+int Inner_Node::get(int key) {
+  return key;
+}
+
 /*  Not using dynamic locking, so uneeded */
 /*  Just assinged the node's unique_id... Nothing else to do */
 Inner_Node::Inner_Node() {

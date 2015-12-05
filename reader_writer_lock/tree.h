@@ -8,7 +8,6 @@
 
 #include "leaf_node.h"
 #include "inner_node.h"
-#include "reader_writer_lock.h"
 
 class Tree {
 public:
@@ -19,6 +18,7 @@ public:
     root = new Inner_Node();
     root->create_first_node(1, 1);
   }
+  int get(int);
   void insert(int, int);
   void insert2(int, int);
   void split();
