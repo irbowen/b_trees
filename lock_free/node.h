@@ -2,6 +2,7 @@
 #define NODE_H
 
 #include <vector>
+#include <array>
 #include <list>
 #include <tuple>
 #include <algorithm>
@@ -9,6 +10,7 @@
 #include <sstream>
 #include <string>
 #include <atomic>
+#include <memory>
 
 #include "helper.h"
 

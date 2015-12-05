@@ -2,9 +2,9 @@
 
 using namespace std;
 
-/*  Create a new Leaf_Node.  At this point, sibling pointers don't need to 
-    point to anything */
+/*  Create a new Leaf_Node */
 Leaf_Node::Leaf_Node() {
+  elements.reserve(DATA_SLOTS);
 }
 
 bool Leaf_Node::can_split() {
@@ -20,14 +20,24 @@ bool Leaf_Node::can_split() {
     Step 4: Maybe? Continue        */
 bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /*  We always want to insert into this node.  We can worry about splits lates */
-  atomic<list<tuple<int, int>>*> elements_copy = elements;
-  elements_copy->push_back(make_tuple(key, value));
+  //atomic<decltype(*elements.data())> elements_copy = elements.data();
+  atomic<decltype(elements)*> elements_address_atomic(&elements);
+  auto elements_copy = elements;
+  elements_copy.push_back(make_tuple(key, value));
   /*  Since this is a list, we can't just use std::sort() */
-  elements_copy->sort([](auto& a, auto& b) {
+  sort(begin(elements_copy), end(elements_copy), [](auto& a, auto& b) {
     return get<0>(a) < get<0>(b);
   });
+  if (elements_copy.size() < DATA_SLOTS) {
+    if (atomic_compare_exchange_strong(elements_address_atomic, elements, elements_copy)) {
+      return false;
+    }
+    else {
+      return add_key_value_pair(key, value, node_key);
+    }
+  }
   /*  But what if we need to split the node? */
-  if (elements_copy->size() >= DATA_SLOTS) {
+  if (elements_copy.size() >= DATA_SLOTS) {
     /*  Find the midpoint element in the list.... Linear search */
     auto mid_point = elements_copy.size() / 2;
     auto it = begin(elements_copy);
@@ -38,9 +48,9 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     auto new_key = *it;
     /*  And we want our key to have its descendants on the left. */
     it++;
-    list<tuple<int, int>> right(it, end(elements_copy));
+    vector<tuple<int, int>> right(it, end(elements_copy));
     /*  Resize, since we're giving half of our list to the new node */
-    elements_copy->resize(mid_point + 1);
+    elements_copy.resize(mid_point + 1);
     /*  Set the node_key to pass back up */
     node_key.key = get<0>(new_key);
     node_key.node = new Leaf_Node();
@@ -54,7 +64,7 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
 /*  Copies all the elements of the vector into the node's internal storage
     TODO: make this a move, &&, or something else fancy/fast 
     NOTE: NOT THREAD SAFE */
-void Leaf_Node::add_vector(list<tuple<int, int>> v) {
+void Leaf_Node::add_vector(vector<tuple<int, int>> v) {
   for (auto& i : v) {
     elements.push_back(i);
   }
