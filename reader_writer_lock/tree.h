@@ -18,7 +18,7 @@ public:
     root = new Inner_Node();
     root->create_first_node(1, 1);
   }
-  int get(int);
+  int get_value(int);
   void insert(int, int);
   void insert2(int, int);
   void split();

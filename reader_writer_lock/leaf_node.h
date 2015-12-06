@@ -3,6 +3,10 @@
 
 #include "node.h"
 
+/*
+  Done
+*/
+
 /* Class for the leaf nodes of the tree */
 class Leaf_Node : public Node {
   /*  The actual data to be stored.  The first element is the key,
@@ -10,16 +14,12 @@ class Leaf_Node : public Node {
       I was thinking disk block number - but this could be anything */  
   std::list<std::tuple<int, int>> elements;
   /*  The reader writer lock object for this object */
-  std::mutex m;
+  std::shared_timed_mutex m;
 public:
-  /*  Left and right siblings so that we can avoid 
-      going up to the parent to do range queries */
-  Leaf_Node* left_sibling;
-  Leaf_Node* right_sibling;
-
-  //int unique_id;
   /*  Creates a new leaf node */
   Leaf_Node();
+  /*  Get the value stored in this leaf node.  Return -1 if not found */
+  int get_value(int);
   /*  Inheirteed from Node.  Add the (int,int) pair, Node_key
     is used if the node is split */
   bool add_key_value_pair(int, int, Node_key&);
@@ -27,10 +27,11 @@ public:
   void add_vector(std::list<std::tuple<int, int>>);
   /*  Print the elements, with spacing based on the int arg */
   std::string print_r(int);
-  /* Print all the keys stored in elements vector */
+  /*  Print all the keys stored in elements vector */
   std::string  print_keys();
+  /*  Returns true if this node could split */
   bool can_split();
-  void reset();
+  /*  Returns false */
   bool is_inner();
 };
 

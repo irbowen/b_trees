@@ -19,7 +19,7 @@ public:
   Inner_Node();
   std::list<int> keys;
   std::list<Node*> values;
-  int get(int);
+  int get_value(int);
   int unique_id;
   void create_first_node(int, int);
   bool add_key_value_pair(int, int, Node_key&);
@@ -31,7 +31,6 @@ public:
   std::string print_r(int);
   bool can_split();
   bool is_inner();
-  void reset();
 };
 
 #endif

@@ -1,22 +1,30 @@
 #include "inner_node.h"
 #include "leaf_node.h"
-#include <typeinfo>
 
 using namespace std;
 
-int Inner_Node::get(int key) {
-  return key;
+int Inner_Node::get_value(int key) {
+  shared_lock<shared_timed_mutex> s_lock(node_mutex);
+  auto this_value = begin(values);
+  auto this_key = begin(keys);
+  //assert(this_value);
+  //assert(this_key);
+  assert(*this_value);
+  assert(*this_key);
+  for (; this_key != end(keys); this_key++, this_value++) {
+    if (key <= *this_key) {
+      return (*this_value)->get_value(key);
+    }
+  }
+  //assert(this_value);
+  assert(*this_value);
+  return (*this_value)->get_value(key);
 }
 
 /*  Not using dynamic locking, so uneeded */
 /*  Just assinged the node's unique_id... Nothing else to do */
 Inner_Node::Inner_Node() {
   unique_id = Node::get_counter();
-}
-
-void Inner_Node::reset() {
-  keys.clear();
-  values.clear();
 }
 
 bool Inner_Node::is_inner() {

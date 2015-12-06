@@ -2,8 +2,8 @@
 
 using namespace std;
 
-int Tree::get(int key) {
-  return root->get(key);
+int Tree::get_value(int key) {
+  return root->get_value(key);
 }
 
 void Tree::insert(int key, int value) {

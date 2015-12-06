@@ -2,19 +2,8 @@
 
 using namespace std;
 
-/*  Create a new Leaf_Node.  At this point, sibling pointers don't need to 
-    point to anything */
-Leaf_Node::Leaf_Node() {
-  left_sibling = nullptr;
-  right_sibling = nullptr;
-  //unique_id = Node::get_counter();
-}
-
-void Leaf_Node::reset() {
-  left_sibling = nullptr;
-  right_sibling = nullptr;
-  elements.clear();
-}
+/*  Create a new Leaf_Node. */
+Leaf_Node::Leaf_Node() {}
 
 bool Leaf_Node::can_split() {
   if (elements.size() + 1 >= DATA_SLOTS) {
@@ -23,9 +12,20 @@ bool Leaf_Node::can_split() {
   return false;
 }
 
+int Leaf_Node::get_value(int key) {
+  shared_lock<shared_timed_mutex> lock(m);
+  auto results = find_if(elements.begin(), elements.end(), [&](auto& a) {
+    return (get<0>(a) == key);
+  });
+  if (results != end(elements)) {
+    return get<1>(*results);
+  }
+  return -1;
+}
+
 bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   /* We're clearly here to do a write */
-  unique_lock<mutex> lock(m);
+  unique_lock<shared_timed_mutex> lock(m);
   /*  We always want to insert into this node.  We can worry about splits lates */
   elements.push_back(make_tuple(key, value));
   /*  Since this is a list, we can't just use std::sort() */
@@ -50,13 +50,7 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     /*  Set the node_key to pass back up */
     node_key.key = get<0>(new_key);
     node_key.node = new Leaf_Node();
-    /*  Shuffling pointers around */
-    Leaf_Node* temp = right_sibling;
-    right_sibling = reinterpret_cast<Leaf_Node*>(node_key.node);
-    right_sibling->left_sibling = this;
-    right_sibling->right_sibling = temp;
-    right_sibling->add_vector(right);
-    /*  This could probably be released earlier, but for correctness, for now... */
+    reinterpret_cast<Leaf_Node*>(node_key.node)->add_vector(right);
     return true;
   }
   return false;

@@ -20,7 +20,8 @@ void insert(int num_test, int rand_mod_factor, int read_percent) {
       st.insert2(temp, i*2);
     }
     else {
-      st.get(temp);
+      auto value = st.get_value(temp);
+      cout << "Value: " << value << endl;
     }
   }
 }
