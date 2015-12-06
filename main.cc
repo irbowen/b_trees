@@ -1,4 +1,4 @@
-#include <iostream>
+#include <iostream> 
 #include <thread>
 #include <ctime>
 #include <cstdlib>
@@ -7,31 +7,49 @@
 
 using namespace std;
 
-const int NUM_TEST = 10000;
+const int NUM_TEST = 100000;
 
 const int MOD_FACTOR = 1000000;
 
-void time_it(int arg) {
-  Sequential_Tree st;
-  clock_t start;
-  start = clock();
-  for (int i = 0; i < arg; i++) {
-    auto temp = rand() % MOD_FACTOR;
-//    cout << "INSERT: " << temp << "";
-    st.insert(temp, i*2);
+Sequential_Tree st;
+
+void insert(int num_test, int rand_mod_factor, int read_percent) {
+  for (int i = 0; i < num_test; i++) {
+    auto temp = rand() % rand_mod_factor;
+    if (rand() % 100 < read_percent) {
+      st.insert(temp, i*2);
+      cout << "inserting: " << temp << endl;
+    }
+    else {
+      auto value = st.get_value(temp);
+      cout << "Value: " << value << endl;
+    }
   }
-  cout << (clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
-  st.print_all();
 }
 
+void time_it(int num_threads, int num_test, int rand_mod_factor, int read_percent) {
+  clock_t start;
+  start = clock();
+  insert(num_test, rand_mod_factor, read_percent);
+  auto time_taken = clock() - start; 
+  st.print_all();
+  cout << "Num threads(" << num_threads << ") is not used in this version" << endl;
+  cout << "Time: " << time_taken / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
+}
+
+/*  Num Threads
+    Num inputs per thread
+    Rand Factor
+    Read Percentage  
+*/
 int main() {
   cout << "Size, Time\n";
   srand(0);
- /* int shift = 7;
-  for (int i = 4; i < 1<<shift; i = i * 2) {
-    time_it(i);
-    cout << "\n~~~~~~~TRIAL~~~~~~~\n";
-  }*/
-  time_it(NUM_TEST);
+  int num_threads = 0, num_test = 0, rand_mod_factor = 0, read_percent = 0;
+  cin >> num_threads;
+  cin >> num_test;
+  cin >> rand_mod_factor;
+  cin >> read_percent;
+  time_it(num_threads, num_test, rand_mod_factor, read_percent);
   return 0;
 }

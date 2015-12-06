@@ -3,50 +3,52 @@
 
 using namespace std;
 
-/*  Just assinged the node's unique_id... Nothing else to do */
-Inner_Node::Inner_Node() {
-  unique_id = Node::get_counter();
+int Inner_Node::get_value(int key) {
+  auto this_value = begin(values);
+  auto this_key = begin(keys);
+ // if (this_value == end(values)) {
+//return -1;
+//  }
+  assert(*this_key);
+  assert(*this_value);
+  for (; this_key != end(keys); this_key++, this_value++) {
+    if (key <= *this_key) {
+      return (*this_value)->get_value(key);
+    }
+  }
+  assert(*this_value);
+  return (*this_value)->get_value(key);
 }
 
-/*  Return true if this nodes splits, false if not  */
+Inner_Node::Inner_Node() {}
+
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
-  /*  If this is the very first Inner_Node in the tree, we have to do some setup */
-  if (keys.size() == 0) {
-    create_first_node(key, value);
-    return false;
-  }
-  
+ 
   bool inserted = false;
-  auto values_post = begin(values);
+  auto this_value = begin(values);
   auto this_key = begin(keys);
-  for (; this_key != end(keys); this_key++, values_post++) {
+  assert(*this_value);
+  assert(*this_key);
+  for (; this_key != end(keys); this_key++, this_value++) {
     if (key <= *this_key) {
-        add_to_child(values_post, key, value);
-        //std::cout << "Node: " << i << "key, key compare: " << key << ", " << keys.at(i) << " "<< std::endl;
-        inserted = true;
-        // std::cout << " Inserted key into this innner node\n" << std::endl;
-        break;
-      }
-    }
-
-
-    auto max_key = std::max_element(begin(keys), end(keys));
-  //  std::cout << "Max key: " << *max_key << std::endl;
-    if (!inserted && key > *max_key) {
-      //auto min_index = std::min(keys.size(), FAN_OUT);
-     // std::cout << "FANOUT, key size: " << FAN_OUT << " " << keys.size() << std::endl;
-   //      std::cout << "Node: " << keys.size() << "key, key compare: " << key << ", " << keys.at(keys.size()-1) << " "<< std::endl;
-      add_to_child(values_post, key, value);
-//      std::cout << "Had to add it at the end of the inner node\n" << std::endl;
-      //std::cout << "inserting at end\n" <<std::endl;
+      assert(!inserted);
+      assert((*this_value) != nullptr);
+      add_to_child(this_value, key, value);
       inserted = true;
+      break;
     }
-    if (!inserted)
-      cout << "ABORT: SOMETHING HAS GONE VERY WRONG\n";
-    // cout << "--Sent request to child for key " << key << "\n";
-  //}
+  }
+  if (!inserted) { // && key > *max_key) {
+      assert(this_key == end(keys));
+      if (this_value != end(values)) {
+        assert(values.size() > keys.size());
+        add_to_child(this_value, key, value);
+        inserted = true;
+      }
+  }
+  assert(inserted);
   if (keys.size() >= FAN_OUT) {
-    //std::cout << "--IN:AKVP::Splitting inner node\n";
+    /*  We need to find the midpoint, keys, etc. */
     auto mid_point = FAN_OUT / 2;
     auto keys_it = begin(keys);
     auto value_it = begin(values);
@@ -54,29 +56,23 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       keys_it++;
       value_it++;
     }
-    /*  So then this is our key */
     auto new_key = *keys_it;
-    keys_it++; value_it++;
-    
-
+    keys_it++;
+    value_it++;
+    /*  We make the new data structs for the new ndoes */
     std::list<int> right_keys(keys_it, end(keys));
     std::list<Node*> right_values(value_it, end(values));
-    //right_values.push_front(new Leaf_Node());
-    //std::cout << "Old array: ";
-    //for (size_t i = 0; i < keys.size(); i++) { std::cout << keys.at(i) << " ";}
-    //std::cout << std::endl;
+    /*  Change this node to be the new left node */
     keys.resize(mid_point+1);
     values.resize(mid_point+1);
-//    values.push_back(new Leaf_Node());
-    //std::cout << "New array: ";
-    //for (size_t i = 0; i < keys.size(); i++) { std::cout << keys.at(i) << " ";}
-    //std::cout << "--IN:AKVP::New key: " << new_key << std::endl;
+    values.push_back(new Leaf_Node());
+    /*  Add everything over into the new inner node */
     Inner_Node* right_inner_node = new Inner_Node();
     right_inner_node->add_vector_keys(right_keys);
     right_inner_node->add_vector_nodes(right_values);
+    /*  Setup to return to the caller */
     node_key.node = right_inner_node;
     node_key.key = new_key;
-    //std::cout << "--IN:AKVP::Returning true for inner node add_key_value_pair" << std::endl;
     return true;
   }
   return false;
@@ -87,29 +83,24 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
 void Inner_Node::add_to_child(list<Node*>::iterator index, int key, int value) {
   Node_key temp;
   if ((*index)->add_key_value_pair(key, value, temp)) {
-    //std::cout << "----Returned true from add_key_value_pair" << std::endl;
-   // std::cout << "----Adding: <key: " << temp.key << ", value: " << temp.node << "> to an inner node\n";
     /*  Search for the key.  If we can't find it, add to the end */ 
-     auto keys_it = upper_bound(begin(keys), end(keys), key);
+    //  auto keys_it = upper_bound(begin(keys), end(keys), key);
+    auto keys_it = lower_bound(begin(keys), end(keys), temp.key);
     if (keys_it == end(keys)) {
       keys.push_back(temp.key);
       values.push_back(temp.node);
     }
-    
+    else if (keys_it == begin(keys)) {
+      keys.push_front(temp.key);
+      values.push_front(temp.node);
+    }
     /*  If we can find it, that is where we have to insert */
     else {
       auto dist = distance(keys_it, begin(keys));
       auto value_it = begin(values);
       for (auto i = 0; i < dist; i++) {value_it++;} 
-      keys.insert(keys_it, temp.key);
-//      cout << "dist: " << dist << endl;
-      auto new_dist = distance(value_it, begin(values));
- //     cout << "new dist: " << new_dist << endl;
       index++;
-      
-      auto index_dist = distance(index, begin(values));
-  //    cout << "index distance: " << index_dist << endl;
-//      assert(index_dist == dist);
+      keys.insert(keys_it, temp.key);
       values.insert(index, temp.node);
     }
   }
@@ -153,7 +144,7 @@ void Inner_Node::print_keys() {
   cout << endl;
 }
 
-void Inner_Node::print_r(int depth) {
+string Inner_Node::print_r(int depth) {
   string padding(depth * 2, ' ');
   ostringstream oss;
   oss << padding << "Inner(" << unique_id << "): (";
@@ -161,11 +152,9 @@ void Inner_Node::print_r(int depth) {
     oss << k << ", ";
   }
   oss << ")->{\n";
-  cout << oss.str();
   for (auto& v : values) {
-    v->print_r(depth+1);
-    cout << endl;
+    oss << v->print_r(depth+1) << "\n";
   }
-  cout << padding  << "} ";
+  oss << padding << "} ";
+  return oss.str();
 }
-

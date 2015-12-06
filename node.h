@@ -29,10 +29,9 @@ class Node {
 public:
   static int counter;
   int get_counter();
-  virtual bool add_key_value_pair(int, int, Node_key&) = 0;
-  /*  In Inner_Nodes, this will call thsi function for each node below it
-      For Leaf Nodes, this will print out all the keys */
-  virtual void print_r(int) = 0;
+  virtual bool add_key_value_pair(int, int, Node_key&)    = 0;
+  virtual int  get_value(int)                             = 0;
+  virtual std::string  print_r(int)                       = 0;
 };
 
 #endif
