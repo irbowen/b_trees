@@ -152,7 +152,7 @@ You should try to write the best research paper that you can using the results o
 \item The motivation, why its important
 \item The literature review (the previous work in this area
 \item Main idea and approach
-\item Implementatino techniques
+\item Implementation techniques
 \item Experimental setup
 \item Results
 \end{enumerate}
@@ -217,36 +217,36 @@ We attempt to look B-Tree's for insert-heavy workloads. WE WILL ASSUME THE INDEX
 It should be noted that we are not looking at transactional level locking, but concurrent execution within a transaction, or in a transaction free environment.  We are not concerned, then, with provide any kind of predicate locks to potect against "phantom" inserts.
 
 \section{Previous Work}
-B-trees have long been the primary access data structure for databases, file systems, and various other systems because of their logarthimc \texttt{insert()} and \texttt{get()}.
+B-trees have long been the primary access data structure for databases, file systems, and various other systems because of their logarithmic \texttt{insert()} and \texttt{get()}.
 They also have a host of other properties that make them also for large systems.  A short list: 
 \begin{enumerate}
-\item Maintain everything inorder.  This means that merge operations can be done without sort, and SMJ, and often used join in database systems, is very efficent
-\item Block access.  The strucutre can store as much data is it can on a single page, and doing locking on a single page.  This made B-Tree's very popular early on, when database's could not fit in memory, and had to be dumped onto disk.
+\item Maintain everything in order.  This means that merge operations can be done without sort, and SMJ, and often used join in database systems, is very efficient
+\item Block access.  The structure can store as much data is it can on a single page, and doing locking on a single page.  This made B-Tree's very popular early on, when database's could not fit in memory, and had to be dumped onto disk.
 \end{enumerate}
 
-Over there 40 year history, there have been many different variations and flavors of B-Trees.  The original version of this data structure stored data in both the leaf and inner nodes.  These structures were optimzed for block access - the entire b-tree index could not fit into memory, and the fact that its nodes size could be made to match the disk block size.  This, coupled with buffer bools, made them the domanit structure even in early database systems.
+Over there 40 year history, there have been many different variations and flavors of B-Trees.  The original version of this data structure stored data in both the leaf and inner nodes.  These structures were optimized for block access - the entire b-tree index could not fit into memory, and the fact that its nodes size could be made to match the disk block size.  This, coupled with buffer pools, made them the dominant structure even in early database systems.
 
-Later versions (B*Trees or B+Trees, depending on who you ask) stored all the data in leaf nodes, and the inner nodes served only as lookup keys.  Later version would ensure the entire tree was height balanced, and put pointers on the leaf nodes so that scan could be done with only one tree taversal.  
+Later versions (B*Trees or B+Trees, depending on who you ask) stored all the data in leaf nodes, and the inner nodes served only as lookup keys.  Later version would ensure the entire tree was height balanced, and put pointers on the leaf nodes so that scan could be done with only one tree traversal.  
 
-Later (fancier) techniques attempted to put links on inner nodes as well, so that they could do "overflow" nodes, to try to prolong splitting.  The idea here was that when a key was inserted into a node that should then split, it would look at its neightbors in the same levle of the tree. If they have enough room, the node could offload some of its keys and values onto its siblings.  This could allow the tree to become more 'full' - the average occupancy of each node will be higher - before nodes split.  Depending on the cost of splitting, and the number that occur, this could provide a benifit to performance.
+Later (fancier) techniques attempted to put links on inner nodes as well, so that they could do "overflow" nodes, to try to prolong splitting.  The idea here was that when a key was inserted into a node that should then split, it would look at its neighbors in the same  of the tree. If they have enough room, the node could offload some of its keys and values onto its siblings.  This could allow the tree to become more 'full' - the average occupancy of each node will be higher - before nodes split.  Depending on the cost of splitting, and the number that occur, this could provide a benefit to performance.
 
 There have been a few approaches to locking in B-Trees so far.
 
-The first, naive, approach, is to lock any node that could split on an insert.  However, since any split could propigate all the way back up to the root node, each insert would need to have an exclusive lock on every node that it touches - making the tree single threaded.
+The first, naive, approach, is to lock any node that could split on an insert.  However, since any split could propagate all the way back up to the root node, each insert would need to have an exclusive lock on every node that it touches - making the tree single threaded.
 
-Another slightly better way to do locking is to acquire a shared lock at first, and then scan throught the node to find where the key will be inserted.  If the child not cannot spit, than we can hold an shared lock on the node while the rest of the insert finishes in the tree below.  If the child can split, we must hold an exclusive lock.  The reader will notice that this can still lead to high lock contention on the root node, especially with small fannout.
+Another slightly better way to do locking is to acquire a shared lock at first, and then scan through the node to find where the key will be inserted.  If the child not cannot spit, than we can hold an shared lock on the node while the rest of the insert finishes in the tree below.  If the child can split, we must hold an exclusive lock.  The reader will notice that this can still lead to high lock contention on the root node, especially with small fan out.
 
 \section{Our Approach}
 We first wanted to see what worked well on a sequential model, so that we can compare those same factors on our concurrent models.
 
-We knew that we wanted to be able to test the effect of the fannout of the nodes - what size of fannout favors insert-heavy workloads? We decided to test the fannout of the inner nodes, and the number of data elements stored in a leaf node seperately.  We plan on seeing whether one of these fannouts has more of an input on performance.  Both of these constants can be modified in \texttt{node.h}
+We knew that we wanted to be able to test the effect of the fan out of the nodes - what size of fan out favors insert-heavy workloads? We decided to test the fan out of the inner nodes, and the number of data elements stored in a leaf node separately.  We plan on seeing whether one of these fan outs has more of an input on performance.  Both of these constants can be modified in \texttt{node.h}
 
-We also want to see what the performace is under different read and write percentage workloads.  We use \texttt{std::rand()} to decide if a given operation should be a read or write in our testing setup.  This value is input into the program through standard input at startup
+We also want to see what the performance is under different read and write percentage workloads.  We use \texttt{std::rand()} to decide if a given operation should be a read or write in our testing setup.  This value is input into the program through standard input at start up.
 
 There were a few things that we decided to change, given that this tree is to be optimized for writes instead of reads.  
-We do not convern with keeping all the leaf nodes at equal depth.  This makes sense for reads - you want to make sure each key get be access in the same amount of time, and if you are trying to get multiple elements, you can do the lookup once and then just scan across the leaf nodes.  However, maintain this global depth is expensive in the face of multiple threads.  We chose to abandon this requirement, and let the tree have varying depths of nodes - the root node could point to some leaf nodes, and other trees with various children.  This could increase lookup time (as well as insert time, since it must do at lookup to find the insert location, however, as long as the key values are not VERY skewed, the tree should perform well.)
+We do not concern ourselves with keeping all the leaf nodes at equal depth.  This makes sense for reads - you want to make sure each key get be access in the same amount of time, and if you are trying to get multiple elements, you can do the lookup once and then just scan across the leaf nodes.  However, maintain this global depth is expensive in the face of multiple threads.  We chose to abandon this requirement, and let the tree have varying depths of nodes - the root node could point to some leaf nodes, and other trees with various children.  This could increase lookup time (as well as insert time, since it must do at lookup to find the insert location, however, as long as the key values are not VERY skewed, the tree should perform well.)  We believe that additional lookup time is not a problem, as long as it is concurrent - the real performance limitation is when the tree structure must change, because this requires exclusive locks.  If we can keep the "structure" of the tree the same, then we can maximize for inserts, and always have some number of threads doing something useful, instead of waiting as the tree is balanced.
 
-Many B-Tree implemnts
+Many B-Tree implement pointers to the neighboring nodes at the same level, both for leaf and inner nodes.  While this is certainly helpful for range-based read workloads, there is a cost that has to be paid on every insert.  In an insert-heavy workload, these become much more important.  Also, in the inner nodes, these pointers are used to push of the tree splitting, to lower cost.  This was assuming, however, that the tree was balanced.  Without this invariant, there is no reason to do this.  In concurrent code, managing all of these pointers become incredibly difficult to do correctly, and has minimal benefit.  Therefore, we decided to forgo these pointers.  This means that range queries become less efficient, because we can no longer scan across the leaf nodes.  However, for an insert heavy workload, range queries are not well defined.  They would require some form of predicate locking, MVCC, or some other complication that we do not want - simple put, workloads that are insert heavy should know that range based queries do not make sense, as the data is always being changed.
 
 \section{Architecture}
 What all did we have to build to make this work and test out our ideas?
@@ -254,9 +254,9 @@ What all did we have to build to make this work and test out our ideas?
   \item{Testing Framework:} We want to test the system at different levels of
     \begin{itemize}
       \item Input Size
-      \item Number of THreads
+      \item Number of Threads
       \item Read Write Percent Workload
-      \item Fannout on inner nodes
+      \item Fan out on inner nodes
       \item Data slots on leaf nodes
     \end{itemize}
     To testing all of these things, I will be creating a dope ass main.ccp that can read input from test ases
