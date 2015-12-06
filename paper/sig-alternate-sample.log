@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=latex 2015.7.31)  5 DEC 2015 22:52
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=latex 2015.7.31)  5 DEC 2015 23:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -417,17 +417,17 @@ Overfull \hbox (2.78876pt too wide) in paragraph at lines 273--274
  []
 
 (./sig-alternate-sample.bbl [2])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 294.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 295.
  [3
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 294.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 295.
  (./sig-alternate-sample.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 294.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 294.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 295.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 295.
 Package rerunfilecheck Info: File `sig-alternate-sample.out' has not changed.
 (rerunfilecheck)             Checksum: 8F32F53EF0056B81B4ED842AF50BFF29;440.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 294.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 295.
  ) 
 Here is how much of TeX's memory you used:
  6137 strings out of 495029
@@ -438,4 +438,4 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  39i,12n,34p,764b,510s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on sig-alternate-sample.dvi (3 pages, 23756 bytes).
+Output written on sig-alternate-sample.dvi (3 pages, 23792 bytes).
