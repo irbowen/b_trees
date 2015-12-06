@@ -34,6 +34,9 @@ bool Leaf_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   AA first_aa(1);
   AA second_aa(2);
   atomic<AA> atomic_aa(first_aa);
+  
+  atomic_aa->compare_exchange_string(&first_aa, second_aa);
+
   atomic_compare_exchange_strong(&atomic_aa, &first_aa, second_aa);
   cout << atomic_aa->value << endl;
   auto elements_copy = elements;
