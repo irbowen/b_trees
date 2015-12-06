@@ -262,7 +262,7 @@ What all did we have to build to make this work and test out our ideas?
     To testing all of these things, I will be creating a dope ass main.ccp that can read input from test ases
   \item{Sequential Tree:} We had to build a simple, single-thread B-tree first.  We built on this for our other version, and will also use it as the baseline for testing.
   \item{ReaderWriter Tree:} This tree uses different kinds of locks, shared and exclusive, and also does checking to see if the child node can split, to see if this node is "safe" from splitting.  This version uses \texttt{std::list<>} within the nodes
-  \item{ReaderWriter Array:} How does sequential access of nodes affect performance?  We'll see.  Could this show promise for further extension - putting the whole B-tree into an array?
+  \item{ReaderWriter Array:} How does sequential access of nodes affect performance?  We'll see.  We would think that as the size of the inner and leaf node fannout increases, the array based B-Tree should perform better and better compared to the list based tree.   Could this show promise for further extension - putting the whole B-tree into an array?
   \item{BLink Tree:} This structure is different in that it insert into the leaf node, and acquires locks on the way back up
 \end{itemize}
 
