@@ -1,7 +1,7 @@
 \begin{thebibliography}{1}
 
 \bibitem{sultana:lockfree}
-Peter~Graham Afroza~Sultana, Helen~Cameron.
+Helen~Cameron Afroza~Sultana and Peter Graham.
 \newblock Concurrent b-trees with lock-free techniques.
 \newblock {\em DUNNO}, 0(0), 2010.
 
@@ -17,7 +17,7 @@ Philip~L. Lehman and S.~Bing Yao.
   1987.
 
 \bibitem{bender:cache}
-Seth Gilbert Bradely C.~Kuszmaul Michael A.~Bender, Jermey T.~Fineman.
+Seth~Gilbert Michael A.~Bender, Jermey T.~Fineman and Bradely~C. Kuszmaul.
 \newblock Concurrent cache-oblivious b-trees.
 \newblock 2005.
 
