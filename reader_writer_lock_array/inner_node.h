@@ -12,7 +12,6 @@
 
 /* Class for the inner nodes in the tree */
 class Inner_Node : public Node {
-  /* */
   std::shared_timed_mutex node_mutex;
   std::mutex m;
 public:

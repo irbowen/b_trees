@@ -17,10 +17,10 @@ public:
   Tree() {
     root = new Inner_Node();
     root->create_first_node(1, 1);
+    std::cout << "Created root node\n";
   }
   int get_value(int);
   void insert(int, int);
-  void split();
   void print_all();
 };
 
