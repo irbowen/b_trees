@@ -7,8 +7,6 @@ int Inner_Node::get_value(int key) {
   shared_lock<shared_timed_mutex> s_lock(node_mutex);
   auto this_value = begin(values);
   auto this_key = begin(keys);
-  //assert(this_value);
-  //assert(this_key);
   assert(*this_value);
   assert(*this_key);
   for (; this_key != end(keys); this_key++, this_value++) {
@@ -42,12 +40,6 @@ bool Inner_Node::can_split() {
 
 /*  Return true if this nodes splits, false if not  */
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
-  /*  These locks:
-      - Protect from any exceptions
-      - Make sure the mutex is unlocked after the function call
-      - Let us check if the lock owns the mutex (handy for asserts!)
-      So we will use them instead of the raw mutex's 
-      We grab the e_lock right away, and just declare */
   unique_lock<shared_timed_mutex> e_lock(node_mutex, defer_lock);
   shared_lock<shared_timed_mutex> s_lock(node_mutex);
   
@@ -56,8 +48,6 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   auto this_value = begin(values);
   auto this_key = begin(keys);
   size_t temp_value{0}, temp_value_end{0}, new_value{0}, new_value_end{0};
-  /*  If this key is less than or eqal to the current, 
-      we want to insert into its left(down) child */
   assert(*this_value);
   assert(*this_key);
   for (; this_key != end(keys); this_key++, this_value++) {
@@ -65,7 +55,6 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     if (key <= *this_key) {
       assert(!inserted);
       if (m.try_lock()) {
-        //assert(*this_value);
         assert((*this_value) != nullptr);
         child_can_split = (*this_value)->can_split();
         if (child_can_split) {
@@ -82,25 +71,18 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       else {
         assert(s_lock.owns_lock());
         s_lock.unlock();
-        //safe_cout("I couldn't get the lock, so I'm calling the function again\n");
         return add_key_value_pair(key, value, node_key);
       }
     }
   }
-  /*  Probably need the same code from above ^^^, down here */
-  //  auto max_key = std::max_element(begin(keys), end(keys));
   if (!inserted) { // && key > *max_key) {
     assert(s_lock.owns_lock());
     assert(this_key == end(keys));
     if (m.try_lock()) {
-      //assert(*this_value);
-      //assert(this_value != end(values));
-      //assert(this_value == end(values));
       if (this_value != end(values)) {
         assert(values.size() > keys.size());
         child_can_split = (*this_value)->can_split();
         if (child_can_split) {
-          //safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
           s_lock.unlock();
           e_lock.lock();
         }
@@ -109,40 +91,22 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
         new_value_end = keys.size();
         inserted = true;
       }
-      else {
-        assert(false);
-        assert(keys.size() == values.size());
-        /*  A new child is being added, so the parent node needs an e lock */
-        child_can_split = true;
-        s_lock.unlock();
-        e_lock.lock();
-        keys.push_back(key);
-        values.push_back(new Leaf_Node());
-        auto value_it = values.end();
-        value_it--;
-        add_to_child(value_it, key, value);
-        inserted = true;
-      }
       m.unlock();
     }
     else {
       assert(s_lock.owns_lock());
       s_lock.unlock();
-     // safe_cout("I couldn't get the lock, so I'm calling the function again\n");
       return add_key_value_pair(key, value, node_key);
     }
   }
-  
   assert(inserted);
   if (!child_can_split) {
-    /*  We want to make sure the values have not changed, if the child could not have split */
     assert(temp_value == new_value);
     assert(temp_value_end == new_value_end);
     assert(s_lock.owns_lock());
     return false;
   }
   if (child_can_split && keys.size() < FAN_OUT) {
-    //safe_cout("Unlocking exlusive and returning\n");
     assert(e_lock.owns_lock());
     return false;
   }
@@ -161,26 +125,12 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     keys_it++;
     value_it++;
     /*  We make the new data structs for the new ndoes */
-    std::list<int> right_keys(keys_it, end(keys));
-    std::list<Node*> right_values(value_it, end(values));
+    vector<int> right_keys(keys_it, end(keys));
+    vector<Node*> right_values(value_it, end(values));
     /*  Change this node to be the new left node */
     keys.resize(mid_point+1);
     values.resize(mid_point+1);
-    /*  Old code from when I was trying to add the nodes here */
-    /* auto type_tester = *begin(values);
-    if (type_tester->is_inner()) {
-      values.push_back(new Inner_Node());
-    }
-    else {
-    */
     values.push_back(new Leaf_Node());
-    /*
-    }
-    */
-    //Node* new_value = new decltype(*end(values));
-    //values.push_back(new_value);
-    //auto last_element = *(end(values));
-    //last_element->reset();
     /*  Add everything over into the new inner node */
     Inner_Node* right_inner_node = new Inner_Node();
     right_inner_node->add_vector_keys(right_keys);
@@ -190,9 +140,7 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     node_key.key = new_key;
     return true;
   }
-  safe_cout("THIS SHOULD NEVER HAPPEN\nSOMETHING IS WRONG WITH MY LOGIC AND LOCKING\nHALP");
-  exit(1);
-  return false;
+  assert(false);
 }
 
 /*  Add (key, value) to the child node at index
