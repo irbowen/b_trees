@@ -20,7 +20,6 @@ public:
   }
   int get_value(int);
   void insert(int, int);
-  void insert2(int, int);
   void split();
   void print_all();
 };
