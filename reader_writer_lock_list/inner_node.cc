@@ -93,16 +93,34 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
     assert(s_lock.owns_lock());
     assert(this_key == end(keys));
     if (m.try_lock()) {
+      //assert(*this_value);
+      //assert(this_value != end(values));
+      //assert(this_value == end(values));
       if (this_value != end(values)) {
         assert(values.size() > keys.size());
         child_can_split = (*this_value)->can_split();
         if (child_can_split) {
+          //safe_cout("Okay, i'm trying to upgrade this lock, since it can split");
           s_lock.unlock();
           e_lock.lock();
         }
         temp_value_end = keys.size();
         add_to_child(this_value, key, value);
         new_value_end = keys.size();
+        inserted = true;
+      }
+      else {
+        assert(false);
+        assert(keys.size() == values.size());
+        /*  A new child is being added, so the parent node needs an e lock */
+        child_can_split = true;
+        s_lock.unlock();
+        e_lock.lock();
+        keys.push_back(key);
+        values.push_back(new Leaf_Node());
+        auto value_it = values.end();
+        value_it--;
+        add_to_child(value_it, key, value);
         inserted = true;
       }
       m.unlock();
@@ -263,4 +281,3 @@ string Inner_Node::print_r(int depth) {
   oss << padding << "} ";
   return oss.str();
 }
-
