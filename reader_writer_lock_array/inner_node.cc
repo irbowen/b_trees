@@ -20,7 +20,10 @@ int Inner_Node::get_value(int key) {
   return (*this_value)->get_value(key);
 }
 
-Inner_Node::Inner_Node() {}
+Inner_Node::Inner_Node() {
+  keys.reserve(FAN_OUT + 2);
+  values.reserve(FAN_OUT + 3);
+}
 
 bool Inner_Node::is_inner() {
   return true;
@@ -37,6 +40,7 @@ bool Inner_Node::can_split() {
 bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   unique_lock<shared_timed_mutex> e_lock(node_mutex, defer_lock);
   shared_lock<shared_timed_mutex> s_lock(node_mutex);
+  assert(values.size() > keys.size());
   bool inserted = false, child_can_split = false;
   auto this_value = begin(values);
   auto this_key = begin(keys);
@@ -69,6 +73,9 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
       }
     }
   }
+  assert(values.size() > keys.size());
+  assert(this_value != end(values));
+  assert(*this_value);
   if (!inserted) {
     assert(s_lock.owns_lock());
     assert(this_key == end(keys));

@@ -2,7 +2,9 @@
 
 using namespace std;
 
-Leaf_Node::Leaf_Node() {}
+Leaf_Node::Leaf_Node() {
+  elements.reserve(DATA_SLOTS + 2);
+}
 
 bool Leaf_Node::can_split() {
   if (elements.size() + 1 >= DATA_SLOTS) {

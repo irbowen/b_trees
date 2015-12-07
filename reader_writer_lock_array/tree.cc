@@ -44,6 +44,7 @@ void Tree::insert(int key, int value) {
     }
   }
   assert(root->values.size() > root->keys.size());
+  assert(this_value != end(root->values));
   assert(*this_value);
   if (!inserted) {
     assert(s_lock.owns_lock());
@@ -76,6 +77,7 @@ void Tree::insert(int key, int value) {
     assert(temp_value == new_value);
     assert(temp_value_end == new_value_end);
     assert(s_lock.owns_lock());
+    assert(root->keys.size() < root->values.size());
     return;
   }
   if (child_can_split && root->keys.size() < FAN_OUT) {
@@ -109,6 +111,7 @@ void Tree::insert(int key, int value) {
     new_children.push_back(right_inner_node);
     new_root->add_key(new_key);
     new_root->add_vector_nodes(new_children);
+    assert(root->values.size() > root->keys.size());
     root = new_root;
     assert(root->values.size() > root->keys.size());
     assert(right_inner_node->values.size() > right_inner_node->keys.size());
