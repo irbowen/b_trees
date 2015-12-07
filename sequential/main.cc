@@ -18,11 +18,12 @@ void insert(int num_test, int rand_mod_factor, int read_percent) {
     auto temp = rand() % rand_mod_factor;
     if (rand() % 100 < read_percent) {
       st.insert(temp, i*2);
-      cout << "inserting: " << temp << endl;
+      //cout << "inserting: " << temp << endl;
     }
     else {
-      auto value = st.get_value(temp);
-      cout << "Value: " << value << endl;
+      st.get_value(temp);
+      //auto value = st.get_value(temp);
+      //cout << "Value: " << value << endl;
     }
   }
 }
@@ -30,10 +31,9 @@ void insert(int num_test, int rand_mod_factor, int read_percent) {
 void time_it(int num_threads, int num_test, int rand_mod_factor, int read_percent) {
   clock_t start;
   start = clock();
-  insert(num_test, rand_mod_factor, read_percent);
+  insert(num_test * num_threads, rand_mod_factor, read_percent);
   auto time_taken = clock() - start; 
   st.print_all();
-  cout << "Num threads(" << num_threads << ") is not used in this version" << endl;
   cout << "Time: " << time_taken / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
 }
 

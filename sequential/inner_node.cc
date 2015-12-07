@@ -6,9 +6,6 @@ using namespace std;
 int Inner_Node::get_value(int key) {
   auto this_value = begin(values);
   auto this_key = begin(keys);
- // if (this_value == end(values)) {
-//return -1;
-//  }
   assert(*this_key);
   assert(*this_value);
   for (; this_key != end(keys); this_key++, this_value++) {
@@ -48,7 +45,6 @@ bool Inner_Node::add_key_value_pair(int key, int value, Node_key& node_key) {
   }
   assert(inserted);
   if (keys.size() >= FAN_OUT) {
-    /*  We need to find the midpoint, keys, etc. */
     auto mid_point = FAN_OUT / 2;
     auto keys_it = begin(keys);
     auto value_it = begin(values);
@@ -84,7 +80,6 @@ void Inner_Node::add_to_child(list<Node*>::iterator index, int key, int value) {
   Node_key temp;
   if ((*index)->add_key_value_pair(key, value, temp)) {
     /*  Search for the key.  If we can't find it, add to the end */ 
-    //  auto keys_it = upper_bound(begin(keys), end(keys), key);
     auto keys_it = lower_bound(begin(keys), end(keys), temp.key);
     if (keys_it == end(keys)) {
       keys.push_back(temp.key);
@@ -109,9 +104,6 @@ void Inner_Node::add_to_child(list<Node*>::iterator index, int key, int value) {
 /*  Creates two leaf nodes, or each side of the first key.
     Only needs to be called once */
 void Inner_Node::create_first_node(int key, int value) {
- // cout << "NOTE: INTIAL SETUP\n";
-  //cout << "--Added key " << key << " to inner node\n";
-  //To get things started, we need a leaf node on each side of the first key
   keys.push_back(key);
   values.push_back(new Leaf_Node());
   values.push_back(new Leaf_Node());

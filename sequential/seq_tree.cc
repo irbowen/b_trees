@@ -2,6 +2,11 @@
 
 using namespace std;
 
+Sequential_Tree::Sequential_Tree() {
+  root = new Inner_Node();
+  root->create_first_node(1, 1);
+}
+
 int Sequential_Tree::get_value(int key) {
   return root->get_value(key);
 }
@@ -11,17 +16,13 @@ void Sequential_Tree::insert(int key, int value) {
   auto this_value = begin(root->values);
   auto this_key = begin(root->keys);
   for (; this_key != end(root->keys); this_key++, this_value++) {
-    /*  We want to see if this is the key */
     if (key <= *this_key) {
       assert(!inserted);
-     
-        assert(*this_value);
-        assert((*this_value) != nullptr);
-        root->add_to_child(this_value, key, value);
-     
-        inserted = true;
-     
-        break;
+      assert(*this_value);
+      assert((*this_value) != nullptr);
+      root->add_to_child(this_value, key, value);
+      inserted = true;
+      break;
     }
   }
   if (!inserted) {
@@ -31,7 +32,6 @@ void Sequential_Tree::insert(int key, int value) {
       root->add_to_child(this_value, key, value);
       inserted = true;
     }
-    cout << "Values and key size: " << root->values.size() << " " << root->keys.size() << endl;
   }
   assert(inserted);
   if (root->keys.size() >= FAN_OUT) {
@@ -58,7 +58,6 @@ void Sequential_Tree::insert(int key, int value) {
     right_inner_node->add_vector_nodes(right_values);
     /*  Setup to return to the caller */
     Inner_Node* new_root = new Inner_Node();
-
     list<Node*> new_children;
     new_children.push_back(root);
     new_children.push_back(right_inner_node);

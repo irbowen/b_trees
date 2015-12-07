@@ -11,12 +11,8 @@
 class Sequential_Tree {
 public:
   Inner_Node* root;
-  Sequential_Tree() {
-    root = new Inner_Node();
-    root->create_first_node(1,1);
-  }
+  Sequential_Tree();
   void insert(int, int);
-  void split();
   void print_all();
   int get_value(int);
 };
