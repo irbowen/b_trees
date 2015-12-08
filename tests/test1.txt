@@ -1,5 +1,5 @@
-4
+1
 1000
-10000
-50
-//4 Threads, 1000 nums mod(10000) @ 50% read
+1000000
+0
+//1 Threads, 1000 nums mod(1000000) @ 0% read
