@@ -12,6 +12,7 @@ int Inner_Node::get_value(int key) {
   assert(*this_key);
   for (; this_key != end(keys); this_key++, this_value++) {
     if (key <= *this_key) {
+      assert(*this_value);
       return (*this_value)->get_value(key);
     }
   }

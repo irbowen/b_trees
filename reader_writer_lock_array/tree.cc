@@ -44,7 +44,7 @@ void Tree::insert(int key, int value) {
     }
   }
   assert(root->values.size() > root->keys.size());
-  assert(this_value != end(root->values));
+//  assert(this_value != end(root->values));
   assert(*this_value);
   if (!inserted) {
     assert(s_lock.owns_lock());

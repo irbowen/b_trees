@@ -16,11 +16,11 @@ Tree st;
 void insert(int num_test, int rand_mod_factor, int read_percent) {
   for (int i = 0; i < num_test; i++) {
     auto temp = rand() % rand_mod_factor;
-    if (rand() % 100 < read_percent) {
+    if (rand() % 100 > read_percent) {
       st.insert(temp, i*2);
     }
     else {
-//      st.get_value(temp);
+      st.get_value(temp);
       //auto value = st.get_value(temp);
       //cout << "Value: " << value << endl;
     }
