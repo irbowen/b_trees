@@ -1,0 +1,12 @@
+Before you attempt to run this code, first make sure you have a complier with full C++14 support.
+We used gcc 4.9.3, but anything 4.9 or later should work.
+
+Then, simply navigate to whichever directory you'd like and type 'make'.
+The B-Tree implmentations are in
+  -sequential
+  -reader_writer_lock_list
+  -reader_writer_lock_array
+  -stl
+
+Each of these folder has its own makefiles, and is self contained.  
+It you'd like to switch to debug mode, you can open the Makefiles and change the release flag.

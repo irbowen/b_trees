@@ -1,0 +1,7 @@
+std::map, Read 10%
+test1.txt: 1ms
+test2.txt: 2ms
+test3.txt: 34ms
+test4.txt: 716ms
+test5.txt: 13151ms
+test6.txt: 204166ms

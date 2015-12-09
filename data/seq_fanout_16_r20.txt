@@ -1,0 +1,7 @@
+Sequential, Fanout 4, Read 20%
+test1.txt: 2ms
+test2.txt: 20ms
+test3.txt: 92ms
+test4.txt: 606ms
+test5.txt: 6839ms
+test6.txt: 57951ms
