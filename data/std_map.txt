@@ -1,0 +1,7 @@
+std::map
+test1.txt: 1ms
+test2.txt: 6ms
+test3.txt: 63ms
+test4.txt: 720ms
+test5.txt: 12780ms
+test6.txt: 228835ms

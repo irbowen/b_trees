@@ -1,0 +1,7 @@
+Sequential, Fanout 64
+test1.txt: 4ms
+test2.txt: 31ms
+test3.txt: 283ms
+test4.txt: 3607ms
+test5.txt: 128447ms
+test6.txt: 
