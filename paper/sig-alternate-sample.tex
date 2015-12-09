@@ -266,6 +266,96 @@ What all did we have to build to make this work and test out our ideas?
   \item{BLink Tree:} This structure is different in that it insert into the leaf node, and acquires locks on the way back up
 \end{itemize}
 
+\section{Implementation and Test Setup}
+We impmented our B-Trees in \texttt{C++}, using new features only available in \texttt{C++14}, most notably \texttt{stdshared\_time\_mutex}, which allows both exclusive and shared locking.  This requires a compiler with \texttt{gc -4.9} or greater.  Because this is so new, few systems have made version 4.9 available - it is not available on \texttt{bigdata.eecs.umich.edu}, for example, we decided to set up our own testing environment.
+
+We set up a virtual machine using Oracle Virtual Box.  The VM is running Ubunutu Server 15.10 with gcc 4.9.3.  The host system is a Windows 7 machine with a FX-8350 (\texttt{8 cores @ 4Ghz}) and 32GB of RAM.  We allocated 4 cores and 24GB of RAM to the VM.  All test were run with minimal applications running on the Windows side.
+
+\section{Performance}
+We tested all of our implementations under several different conditions.
+
+We begin with our sequential tree implementation, so that we have a baseline to compare our concurrent versions to.  \\
+
+Sequential Tree, F = 4\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	2	\\
+  10000			&	12	\\
+  100000		&	80	\\
+  1000000		&	586	\\
+  10000000		&	5620	\\
+  100000000		&	59000	\\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 16\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	2	\\
+  10000			&	20	\\
+  100000		&	123	\\
+  1000000		&	754	\\
+  10000000		&	7045	\\
+  100000000		&	70318	\\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 64\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	4	\\
+  10000			&	31	\\
+  100000		&	283	\\
+  1000000		&	3607	\\
+  10000000		&	128447	\\
+  100000000		&	384118\\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 256\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	7	\\
+  10000			&	67	\\
+  100000		&	968	\\
+  1000000		&	14840	\\
+  10000000		&	267131	\\
+  100000000		&	2543760	\\
+  \hline
+\end{tabular}\\
+
+Note the dramatic difference in performance as the fannout increases. 
+We discuss the significance of these results in the next section.\\
+
+We wanted to compare are tree to standard implementations to a standard, to verify that our concurrent versions were not built on top of something slow.  To that end, we compared it to std::map on gcc 4.9.3.
+
+\texttt{std::map}\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	1	\\
+  10000			&	6	\\
+  100000		&	63	\\
+  1000000		&	720	\\
+  10000000		&	12780	\\
+  100000000		&	228835	\\
+  \hline
+\end{tabular}\\
+
+\section{Discussion}
+It is curious that the fannout increases seems to slow things down
+
+
+- Stonebraker is right - locking is bad, single threads fast to completion is better
+- Fan out is bad
+	- We though fannout would help cache, but it turns out not
+	- Based on old schol block access with buffer pool
+	- Now, its all in memory - hoping down a few levels of trees doesn't matter
+
 
 \section{Citations}
 Some papers that we read to give ourselves background on the topics:
