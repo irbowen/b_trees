@@ -17,10 +17,10 @@
 */
 
 /*  Maxiumum number of data slots in leaf nodes */
-const size_t DATA_SLOTS = 16;
+const size_t DATA_SLOTS = 4;
 
 /*  Maximum number of children in inner nodes */
-const size_t FAN_OUT = 16;
+const size_t FAN_OUT = 4;
 
 /* Forward declaration to make the compiler happy */
 class Node;

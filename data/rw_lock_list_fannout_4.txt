@@ -1,0 +1,7 @@
+RW_Lock_List, Fanout 4
+test1.txt: 5ms
+test2.txt: 83ms
+test3.txt: 1308ms
+test4.txt: 23380ms
+test5.txt: 365915ms
+test6.txt: 

@@ -4,4 +4,4 @@ test2.txt: 31ms
 test3.txt: 283ms
 test4.txt: 3607ms
 test5.txt: 128447ms
-test6.txt: 
+test6.txt: 384118ms

@@ -41,7 +41,7 @@ void time_it(int num_threads, int num_test, int rand_mod_factor, int read_percen
   }
    
   auto time_taken = clock() - start; 
-  st.print_all();
+  //st.print_all();
   cout << "Time: " << time_taken / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
 }
 
