@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=latex 2015.12.5)  9 DEC 2015 19:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=latex 2015.12.5)  9 DEC 2015 23:34
 entering extended mode
 **sig-alternate-sample.tex
 (sig-alternate-sample.tex
@@ -505,18 +505,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 493--504
  []
 
 
-Overfull \hbox (1.5349pt too wide) in paragraph at lines 518--518
-[]\subsecfnt 90% In-sert, 10% Lookup THIS DATA NOT YET
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 519--530
 
- []
-
-
-Overfull \hbox (1.5349pt too wide) in paragraph at lines 543--543
-[]\subsecfnt 90% In-sert, 10% Lookup THIS DATA NOT YET
  []
 
 
@@ -539,10 +529,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 599--610
 
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [4]
+[4]
 Overfull \hbox (1.5349pt too wide) in paragraph at lines 623--623
 []\subsecfnt 90% In-sert, 10% Lookup THIS DATA NOT YET
  []
@@ -553,31 +540,31 @@ Underfull \hbox (badness 10000) in paragraph at lines 624--635
  []
 
 
-Overfull \hbox (2.78876pt too wide) in paragraph at lines 672--673
+Overfull \hbox (2.78876pt too wide) in paragraph at lines 673--674
 []\T1/aer/m/n/9 "Concurrent B-trees with Lock-free Tech-niques"[[][][][]] gives
 
  []
 
 (sig-alternate-sample.bbl [5])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 694.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 695.
  [6
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 694.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 695.
  (sig-alternate-sample.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 694.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 694.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 695.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 695.
 Package rerunfilecheck Info: File `sig-alternate-sample.out' has not changed.
-(rerunfilecheck)             Checksum: 58FB39743C8C04E5FFD801061CE0FD35;1738.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 694.
+(rerunfilecheck)             Checksum: 8B5E9830D4093FF8EAF20E5462170A41;1690.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 695.
  ) 
 Here is how much of TeX's memory you used:
  6158 strings out of 493674
  87087 string characters out of 3141556
- 213979 words of memory out of 3000000
+ 216931 words of memory out of 3000000
  9414 multiletter control sequences out of 15000+200000
  44927 words of font info for 61 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  39i,12n,34p,1173b,510s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on sig-alternate-sample.dvi (6 pages, 64416 bytes).
+Output written on sig-alternate-sample.dvi (6 pages, 64864 bytes).

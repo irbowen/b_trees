@@ -515,16 +515,16 @@ Reader Writer Tree Array \\
 \end{tabular} 
 
 
-\subsubsection{90\% Insert, 10\% Lookup  THIS DATA NOT YET VALID}
+\subsubsection{90\% Insert, 10\% Lookup}
 Reader Writer Tree List \\
 \begin{tabular}{| l | c | c | c | c | c | c | r}
   \hline
   Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
   Fan out & & & & & &  \\  \hline
-  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
-  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
-  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
-  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  4			&	12 & 106 & 1147 & 17987 & 287852 & * \\
+  16		&	1 & 15 & 223 & 4223 & 75675 & * \\
+  64		&	6 & 53 & 436 & 7965 & 138397 & * \\
+  256		&	17 & 94 & 1317 & 22046 & 342301 & * \\
   \hline
 \end{tabular} \\
 
@@ -533,23 +533,23 @@ Reader Writer Tree Array \\
   \hline
   Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
   Fan out & & & & & &  \\  \hline
-  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
-  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
-  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
-  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
+  4			&	9 & 79 & 870 & 13672 & 203731 & * \\
+  16		&	1 & 10 & 109 & 1269 & 16874 & 235350 \\
+  64		&	1 & 8 & 85 & 1113 & 12728 & 179811 \\
+  256		&	3 & 37 & 347 & 3827 & 41877 & * \\
   \hline
 \end{tabular} 
 
-\subsubsection{90\% Insert, 10\% Lookup  THIS DATA NOT YET VALID}
+\subsubsection{80\% Insert, 20\% Lookup}
 Reader Writer Tree List \\
 \begin{tabular}{| l | c | c | c | c | c | c | r}
   \hline
   Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
   Fan out & & & & & &  \\  \hline
-  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
-  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
-  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
-  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  4			&	10 & 76 & 1024 & 16335 & 266000 & * \\
+  16		&	4 & 32 & 204 & 3894 & 65661 & * \\
+  64		&	2 & 48 & 373 & 7321 & 122407 & * \\
+  256		&	14 & 75 & 1117 & 20417 & 321325 & * \\
   \hline
 \end{tabular} \\
 
@@ -558,10 +558,10 @@ Reader Writer Tree Array \\
   \hline
   Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
   Fan out & & & & & &  \\  \hline
-  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
-  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
-  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
-  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
+  4			&	3 & 48 & 811 & 12197 & 191958 & * \\
+  16		&	1 & 11 & 106 & 1182 & 16112 &  \\
+  64		&	1 & 22 & 107 & 1048 & 12947 &  \\
+  256		&	3 & 30 & 301 & 3426 & 37719 & * \\
   \hline
 \end{tabular} 
 
@@ -650,7 +650,7 @@ We began by testing out our sequential tree, on a variety of input sizes.  We wa
 
 We saw that the fan out of 4 gave us the best performance, so we wanted to compare that to an in-memory tree.  We chose to compare to \texttt{std::map}, which is typically implemented using Red-black trees.  When fan out is small, either 4 or 16, the performance of our B-Tree is better.  However, as the fan out increases, our sequential tree performance degrades to the point where it is slower than \texttt{std::map}.
 
-It is curious that the fannout increases seems to slow things down
+It is curious that the fan out increases seems to slow things down
 
 \section{Takeaways}
 We have a few notable takeaways from our implementation and experimentation:
@@ -658,6 +658,7 @@ We have a few notable takeaways from our implementation and experimentation:
 \item \textbf{Locking} Locking is expensive.  Even in our single threaded tests, our multithreaded solutions are considerably slower than our single threaded versions.  The code is nearly identical, and so most of the extra time comes from locking overhead
 \item \textbf{Single Threaded} Much like Stonebraker has mentioned in multiple papers, the traditional concurrent multithreaded code with locks was built for a different era - when indexes were stored on disk, and it made since to make node's the size of a disk block.  Now, it is faster to run operations in a single threaded fashion
 \item \textbf{Smaller Node} Smaller nodes seem to be faster than larger nodes.  While this seems to go against what we would expect with modern cache architecture, it does make sense.  Larger nodes were designed for block access devices, so it made sense to have the nodes be the same size as the disk blocks.  However, if the structure fits in memory, than it is fast and cheap to traverse the nodes, so it's not as important to keep the tree's depth very small.
+\item \textbf{Vectors vs List} Two of our implementations are identical, except for the data structure the nodes use to store their children.  We can see that the array based version beats the list based version handily on every large case, especially when fan out is 16-64.  Arrays of this size fit in caches easily, and searching them sequentially is very quick.  We believe the use of contiguous memory is essential to performance.
 \end{itemize}
 - Stonebraker is right - locking is bad, single threads fast to completion is better
 - Fan out is bad
