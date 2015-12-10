@@ -566,74 +566,56 @@ Reader Writer Tree Array \\
 \end{tabular} 
 
 
-\subsection{Concurrent, Two Threads}
+\subsection{Concurrent, Scaling Threads}
 TODO
 
-\subsubsection{100\% Insert NOT VALID}
-Reader Writer Tree List \\
+Reader Writer Tree List - Input Size of 10000 \\
 \begin{tabular}{| l | c | c | c | c | c | c | r}
   \hline
-  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
-  Fan out & & & & & &  \\  \hline
-  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
-  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
-  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
-  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  Threads & Time \\ \hline
+  1 & 105 \\
+  2 & 332 \\
+  4 & 709 \\
+  8 & 703 \\
   \hline
 \end{tabular} \\
 
-Reader Writer Tree Array \\
+Reader Writer Tree List - Input Size of 100000 \\
 \begin{tabular}{| l | c | c | c | c | c | c | r}
   \hline
-  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
-  Fan out & & & & & &  \\  \hline
-  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
-  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
-  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
-  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
-  \hline
-\end{tabular} 
-
-
-\subsubsection{90\% Insert, 10\% Lookup  THIS DATA NOT YET VALID}
-Reader Writer Tree List \\
-\begin{tabular}{| l | c | c | c | c | c | c | r}
-  \hline
-  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
-  Fan out & & & & & &  \\  \hline
-  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
-  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
-  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
-  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  Threads & Time \\ \hline
+  1 & 1403 \\
+  2 & 4049 \\
+  4 & 8569 \\
+  8 & 9629 \\
   \hline
 \end{tabular} \\
 
-Reader Writer Tree Array \\
+Reader Writer Tree Array - Input Size of 10000 \\
 \begin{tabular}{| l | c | c | c | c | c | c | r}
   \hline
-  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
-  Fan out & & & & & &  \\  \hline
-  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
-  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
-  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
-  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
-  \hline
-\end{tabular} 
-
-\subsubsection{90\% Insert, 10\% Lookup  THIS DATA NOT YET VALID}
-Reader Writer Tree List \\
-\begin{tabular}{| l | c | c | c | c | c | c | r}
-  \hline
-  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
-  Fan out & & & & & &  \\  \hline
-  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
-  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
-  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
-  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  Threads & Time \\ \hline
+  1 & 18 \\
+  2 & 58 \\
+  4 & 153 \\
+  8 & 198 \\
   \hline
 \end{tabular} \\
 
-Reader Writer Tree Array \\
+Reader Writer Tree Array - Input Size of 100000 \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Threads & Time \\ \hline
+  1 & 104 \\
+  2 & 452 \\
+  4 & 1122 \\
+  8 & 2629 \\
+  \hline
+\end{tabular} \\
+
+
+
+Reader Writer Tree List NOT VALID DATA \\
 \begin{tabular}{| l | c | c | c | c | c | c | r}
   \hline
   Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
@@ -655,10 +637,16 @@ It is curious that the fan out increases seems to slow things down
 \section{Takeaways}
 We have a few notable takeaways from our implementation and experimentation:
 \begin{itemize}
-\item \textbf{Locking} Locking is expensive.  Even in our single threaded tests, our multithreaded solutions are considerably slower than our single threaded versions.  The code is nearly identical, and so most of the extra time comes from locking overhead
-\item \textbf{Single Threaded} Much like Stonebraker has mentioned in multiple papers, the traditional concurrent multithreaded code with locks was built for a different era - when indexes were stored on disk, and it made since to make node's the size of a disk block.  Now, it is faster to run operations in a single threaded fashion
+\item \textbf{Locking} Locking is expensive.  Even in our single threaded tests, our multithreaded solutions are considerably slower than our single threaded versions.  The code is nearly identical, and so most of the extra time comes from locking overhead.  Each call to acquire a lock, or even check if it is locked, requires a trap into the OS, which is very expensive.
+
+\item \textbf{Single Threaded} Much like Stonebraker has mentioned in multiple papers, the traditional concurrent multithreaded code with locks was built for a different era - when indexes were stored on disk, and it made since to make node's the size of a disk block.  Now, it is faster to run operations in a single threaded fashion.  Even when we use our concurrent code, it is faster to run 10,000 insert operations in one thread than 5000 insert operations in two threads.
+
 \item \textbf{Smaller Node} Smaller nodes seem to be faster than larger nodes.  While this seems to go against what we would expect with modern cache architecture, it does make sense.  Larger nodes were designed for block access devices, so it made sense to have the nodes be the same size as the disk blocks.  However, if the structure fits in memory, than it is fast and cheap to traverse the nodes, so it's not as important to keep the tree's depth very small.
+
 \item \textbf{Vectors vs List} Two of our implementations are identical, except for the data structure the nodes use to store their children.  We can see that the array based version beats the list based version handily on every large case, especially when fan out is 16-64.  Arrays of this size fit in caches easily, and searching them sequentially is very quick.  We believe the use of contiguous memory is essential to performance.
+
+\item \textbf{B-Tree vs Red black Tree} We noticed that the our sequential tree was able outperform \texttt{std::map}, but as the read percentage increased, \texttt{std::map}'s performance got dramatically better.  We thing that this is because of the underlying structures of our two implementations.  While we use a unbalanced B-Tree with high fan out(compared to Red-Black Trees), which allows for faster inserts.  However, \texttt{std::map} must consistently rebalance, adding overhead.  In higher read based workloads, it gets an advantage for that cost - look ups can be done very quickly.
+
 \end{itemize}
 - Stonebraker is right - locking is bad, single threads fast to completion is better
 - Fan out is bad

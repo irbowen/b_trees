@@ -12,14 +12,11 @@
 \BOOKMARK [3][-]{subsubsection.6.2.1}{100\045 Insert}{subsection.6.2}% 12
 \BOOKMARK [3][-]{subsubsection.6.2.2}{90\045 Insert, 10\045 Lookup}{subsection.6.2}% 13
 \BOOKMARK [3][-]{subsubsection.6.2.3}{80\045 Insert, 20\045 Lookup}{subsection.6.2}% 14
-\BOOKMARK [2][-]{subsection.6.3}{Concurrent, Two Threads}{section.6}% 15
-\BOOKMARK [3][-]{subsubsection.6.3.1}{100\045 Insert NOT VALID}{subsection.6.3}% 16
-\BOOKMARK [3][-]{subsubsection.6.3.2}{90\045 Insert, 10\045 Lookup THIS DATA NOT YET VALID}{subsection.6.3}% 17
-\BOOKMARK [3][-]{subsubsection.6.3.3}{90\045 Insert, 10\045 Lookup THIS DATA NOT YET VALID}{subsection.6.3}% 18
-\BOOKMARK [1][-]{section.7}{Discussion}{}% 19
-\BOOKMARK [1][-]{section.8}{Takeaways}{}% 20
-\BOOKMARK [1][-]{section.9}{Citations}{}% 21
-\BOOKMARK [1][-]{section.10}{Experimental Results}{}% 22
-\BOOKMARK [1][-]{section.11}{Conclusions}{}% 23
-\BOOKMARK [1][-]{section.12}{Acknowledgments}{}% 24
-\BOOKMARK [1][-]{section.13}{References}{}% 25
+\BOOKMARK [2][-]{subsection.6.3}{Concurrent, Scaling Threads}{section.6}% 15
+\BOOKMARK [1][-]{section.7}{Discussion}{}% 16
+\BOOKMARK [1][-]{section.8}{Takeaways}{}% 17
+\BOOKMARK [1][-]{section.9}{Citations}{}% 18
+\BOOKMARK [1][-]{section.10}{Experimental Results}{}% 19
+\BOOKMARK [1][-]{section.11}{Conclusions}{}% 20
+\BOOKMARK [1][-]{section.12}{Acknowledgments}{}% 21
+\BOOKMARK [1][-]{section.13}{References}{}% 22
