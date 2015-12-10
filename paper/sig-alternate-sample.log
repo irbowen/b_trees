@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=latex 2015.12.5)  9 DEC 2015 00:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=latex 2015.12.5)  9 DEC 2015 19:42
 entering extended mode
 **sig-alternate-sample.tex
 (sig-alternate-sample.tex
@@ -419,64 +419,165 @@ bly \T1/aett/m/n/9 std-shared_time_mutex\T1/aer/m/n/9 ,
  []
 
 [2]
-Underfull \hbox (badness 10000) in paragraph at lines 277--278
+Underfull \hbox (badness 10000) in paragraph at lines 283--295
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 279--291
+Underfull \hbox (badness 10000) in paragraph at lines 296--308
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 292--304
+Underfull \hbox (badness 10000) in paragraph at lines 309--321
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 305--317
+Underfull \hbox (badness 10000) in paragraph at lines 322--334
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 318--330
+Underfull \hbox (badness 10000) in paragraph at lines 335--337
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 331--333
+Underfull \hbox (badness 10000) in paragraph at lines 340--352
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 336--348
+Underfull \vbox (badness 5817) has occurred while \output is active []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 354--367
 
  []
 
 
-Overfull \hbox (2.78876pt too wide) in paragraph at lines 363--364
+Underfull \hbox (badness 10000) in paragraph at lines 368--380
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 381--393
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 394--406
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 422--435
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [3]
+Underfull \hbox (badness 10000) in paragraph at lines 436--448
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 449--461
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 462--474
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 475--487
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 493--504
+
+ []
+
+
+Overfull \hbox (1.5349pt too wide) in paragraph at lines 518--518
+[]\subsecfnt 90% In-sert, 10% Lookup THIS DATA NOT YET
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 519--530
+
+ []
+
+
+Overfull \hbox (1.5349pt too wide) in paragraph at lines 543--543
+[]\subsecfnt 90% In-sert, 10% Lookup THIS DATA NOT YET
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 544--555
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 573--584
+
+ []
+
+
+Overfull \hbox (1.5349pt too wide) in paragraph at lines 598--598
+[]\subsecfnt 90% In-sert, 10% Lookup THIS DATA NOT YET
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 599--610
+
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4]
+Overfull \hbox (1.5349pt too wide) in paragraph at lines 623--623
+[]\subsecfnt 90% In-sert, 10% Lookup THIS DATA NOT YET
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 624--635
+
+ []
+
+
+Overfull \hbox (2.78876pt too wide) in paragraph at lines 672--673
 []\T1/aer/m/n/9 "Concurrent B-trees with Lock-free Tech-niques"[[][][][]] gives
 
  []
 
-(sig-alternate-sample.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 385.
- [3]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 385.
+(sig-alternate-sample.bbl [5])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 694.
+ [6
+
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 694.
  (sig-alternate-sample.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 385.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 385.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 694.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 694.
 Package rerunfilecheck Info: File `sig-alternate-sample.out' has not changed.
-(rerunfilecheck)             Checksum: 8227FBA9F7AD4BBE4439809D60261350;613.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 385.
+(rerunfilecheck)             Checksum: 58FB39743C8C04E5FFD801061CE0FD35;1738.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 694.
  ) 
 Here is how much of TeX's memory you used:
- 6145 strings out of 493674
- 86838 string characters out of 3141556
- 191354 words of memory out of 3000000
- 9401 multiletter control sequences out of 15000+200000
+ 6158 strings out of 493674
+ 87087 string characters out of 3141556
+ 213979 words of memory out of 3000000
+ 9414 multiletter control sequences out of 15000+200000
  44927 words of font info for 61 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  39i,12n,34p,1173b,510s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on sig-alternate-sample.dvi (3 pages, 32172 bytes).
+Output written on sig-alternate-sample.dvi (6 pages, 64416 bytes).

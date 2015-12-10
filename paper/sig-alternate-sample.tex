@@ -271,11 +271,15 @@ We impmented our B-Trees in \texttt{C++}, using new features only available in \
 
 We set up a virtual machine using Oracle Virtual Box.  The VM is running Ubunutu Server 15.10 with gcc 4.9.3.  The host system is a Windows 7 machine with a FX-8350 (\texttt{8 cores @ 4Ghz}) and 32GB of RAM.  We allocated 4 cores and 24GB of RAM to the VM.  All test were run with minimal applications running on the Windows side.
 
+We used \texttt{std::rand()} to generate input data.  
+We run all test cases 10 times and report the average, unless otherwise noted.
+
 \section{Performance}
 We tested all of our implementations under several different conditions.
 
-We begin with our sequential tree implementation, so that we have a baseline to compare our concurrent versions to.  \\
-
+\subsection{Sequential}
+We begin with our sequential tree implementation, so that we have a baseline to compare our concurrent versions to.  There are 100\% insert workloads.
+\subsubsection{100\% Insert}
 Sequential Tree, F = 4\\
 \begin{tabular}{| l | r |}
   \hline
@@ -346,10 +350,315 @@ We wanted to compare are tree to standard implementations to a standard, to veri
   \hline
 \end{tabular}\\
 
+\subsubsection{90\% Insert, 10\% Lookup}
+While we are primary focused on insert performance, we wanted to see how a 90% insert 10% lookup workload would perform.\\
+Sequential Tree, F = 4\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	1	\\
+  10000			&	9	\\
+  100000		&	58	\\
+  1000000		&	527	\\
+  10000000		&	5199	\\
+  100000000		&	79855	\\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 16\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	2	\\
+  10000			&	9	\\
+  100000		&	112	\\
+  1000000		&	667	\\
+  10000000		&	6571	\\
+  100000000		&	65188	\\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 64\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	11	\\
+  10000			&	33	\\
+  100000		&	283	\\
+  1000000		&	4891	\\
+  10000000		&	112838	\\
+  100000000		&	\\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 256\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	9	\\
+  10000			&	69	\\
+  100000		&	986	\\
+  1000000		&	14619	\\
+  10000000		&	242493	\\
+  100000000		&	*	\\
+  \hline
+\end{tabular}\\
+
+\texttt{std::map}\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	1	\\
+  10000			&	2	\\
+  100000		&	34	\\
+  1000000		&	716	\\
+  10000000		&	13151	\\
+  100000000		&	204166	\\
+  \hline
+\end{tabular}\\
+We note that std::map seems to perform much better at reads than our implementation 
+
+\subsubsection{80\% Insert, 20\% Lookup}
+While we are primary focused on insert performance, we wanted to see how a 90% insert 10% lookup workload would perform.\\
+Sequential Tree, F = 4\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	1	\\
+  10000			&	5	\\
+  100000		&	60	\\
+  1000000		&	469	\\
+  10000000		&	4701	\\
+  100000000		&	47418	\\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 16\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	2	\\
+  10000			&	20	\\
+  100000		&	92	\\
+  1000000		&	606	\\
+  10000000		&	6839	\\
+  100000000		&	57951	\\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 64\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	4	\\
+  10000			&	32	\\
+  100000		&	226	\\
+  1000000		&	3216	\\
+  10000000		&	82029	\\
+  100000000		&	* \\
+  \hline
+\end{tabular} \\
+
+Sequential Tree, F = 256\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	3	\\
+  10000			&	50	\\
+  100000		&	769	\\
+  1000000		&	12465	\\
+  10000000		&	182482	\\
+  100000000		&	*	\\
+  \hline
+\end{tabular}\\
+
+\texttt{std::map}\\
+\begin{tabular}{| l | r |}
+  \hline
+  Input Size & Time (ms)\\  \hline
+  1000			&	.5	\\
+  10000			&	1	\\
+  100000		&	23	\\
+  1000000		&	584	\\
+  10000000		&	10719	\\
+  100000000		&	180852	\\
+  \hline
+\end{tabular}\\
+
+\subsection{Concurrent, Single threaded}
+We then testing our concurrent versions.
+First we compared on its performance with one thread, and then we scale the number of threads to see how the performance changed.
+
+\subsubsection{100\% Insert}
+Reader Writer Tree List \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
+  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
+  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
+  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  \hline
+\end{tabular} \\
+
+Reader Writer Tree Array \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
+  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
+  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
+  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
+  \hline
+\end{tabular} 
+
+
+\subsubsection{90\% Insert, 10\% Lookup  THIS DATA NOT YET VALID}
+Reader Writer Tree List \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
+  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
+  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
+  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  \hline
+\end{tabular} \\
+
+Reader Writer Tree Array \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
+  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
+  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
+  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
+  \hline
+\end{tabular} 
+
+\subsubsection{90\% Insert, 10\% Lookup  THIS DATA NOT YET VALID}
+Reader Writer Tree List \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
+  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
+  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
+  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  \hline
+\end{tabular} \\
+
+Reader Writer Tree Array \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
+  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
+  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
+  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
+  \hline
+\end{tabular} 
+
+
+\subsection{Concurrent, Two Threads}
+TODO
+
+\subsubsection{100\% Insert NOT VALID}
+Reader Writer Tree List \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
+  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
+  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
+  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  \hline
+\end{tabular} \\
+
+Reader Writer Tree Array \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
+  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
+  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
+  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
+  \hline
+\end{tabular} 
+
+
+\subsubsection{90\% Insert, 10\% Lookup  THIS DATA NOT YET VALID}
+Reader Writer Tree List \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
+  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
+  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
+  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  \hline
+\end{tabular} \\
+
+Reader Writer Tree Array \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
+  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
+  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
+  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
+  \hline
+\end{tabular} 
+
+\subsubsection{90\% Insert, 10\% Lookup  THIS DATA NOT YET VALID}
+Reader Writer Tree List \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	13 & 105 & 1153 & 19787 & 301004 & * \\
+  16		&	1 & 15 & 270 & 4694 & 79077 & * \\
+  64		&	2 & 27 & 458 & 9124 & 156241 & * \\
+  256		&	6 & 71 & 1409 & 25626 & 384319 & * \\
+  \hline
+\end{tabular} \\
+
+Reader Writer Tree Array \\
+\begin{tabular}{| l | c | c | c | c | c | c | r}
+  \hline
+  Input Size & $10^3$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ \\ \hline
+  Fan out & & & & & &  \\  \hline
+  4			&	10 & 78 & 861 & 14650 & 215321 & * \\
+  16		&	2 & 21 & 117 & 1326 & 17772 & 246069 \\
+  64		&	3 & 25 & 120 & 1191 & 14523 & 179811 \\
+  256		&	11 & 59 & 412 & 4150 & 45198 & * \\
+  \hline
+\end{tabular} 
+
 \section{Discussion}
+We began by testing out our sequential tree, on a variety of input sizes.  We wanted to make sure that this implementation, that we would be building on top of for our concurrent versions, was efficient.  We testing with various fan outs, and decided to test for 4, 16, 64, and 256.  We were surprised to see the performance degrade ad the fan out increases.  We assumed that a larger node size would allow faster look-ups and inserts, because the operation would have to traverse fewer levels of the tree.  However,it seems that there is a difficult balance between traversal within a node, and traversal in the tree across nodes.
+
+We saw that the fan out of 4 gave us the best performance, so we wanted to compare that to an in-memory tree.  We chose to compare to \texttt{std::map}, which is typically implemented using Red-black trees.  When fan out is small, either 4 or 16, the performance of our B-Tree is better.  However, as the fan out increases, our sequential tree performance degrades to the point where it is slower than \texttt{std::map}.
+
 It is curious that the fannout increases seems to slow things down
 
-
+\section{Takeaways}
+We have a few notable takeaways from our implementation and experimentation:
+\begin{itemize}
+\item \textbf{Locking} Locking is expensive.  Even in our single threaded tests, our multithreaded solutions are considerably slower than our single threaded versions.  The code is nearly identical, and so most of the extra time comes from locking overhead
+\item \textbf{Single Threaded} Much like Stonebraker has mentioned in multiple papers, the traditional concurrent multithreaded code with locks was built for a different era - when indexes were stored on disk, and it made since to make node's the size of a disk block.  Now, it is faster to run operations in a single threaded fashion
+\item \textbf{Smaller Node} Smaller nodes seem to be faster than larger nodes.  While this seems to go against what we would expect with modern cache architecture, it does make sense.  Larger nodes were designed for block access devices, so it made sense to have the nodes be the same size as the disk blocks.  However, if the structure fits in memory, than it is fast and cheap to traverse the nodes, so it's not as important to keep the tree's depth very small.
+\end{itemize}
 - Stonebraker is right - locking is bad, single threads fast to completion is better
 - Fan out is bad
 	- We though fannout would help cache, but it turns out not
