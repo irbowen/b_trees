@@ -3,7 +3,7 @@
 \bibitem{sultana:lockfree}
 Helen~Cameron Afroza~Sultana and Peter Graham.
 \newblock Concurrent b-trees with lock-free techniques.
-\newblock {\em DUNNO}, 0(0), 2010.
+\newblock 0(0), 2010.
 
 \bibitem{graefe:survey}
 Goetz Graefe.
@@ -20,6 +20,17 @@ Philip~L. Lehman and S.~Bing Yao.
 Seth~Gilbert Michael A.~Bender, Jermey T.~Fineman and Bradely~C. Kuszmaul.
 \newblock Concurrent cache-oblivious b-trees.
 \newblock 2005.
+
+\bibitem{stone:era}
+Daniel J. Abadi Stavros Harizopoulos Nabil Hachem Pat~Helland
+  Michael~Stonebraker, Samuel~Madden.
+\newblock The end of an architectural era (it’s time for a complete rewrite).
+\newblock 2008.
+
+\bibitem{stone:oltp}
+Samuel Madden Michael~Stonebraker Stavros~Harizopoulos, Daniel J.~Abadi.
+\newblock Oltp through the looking glass, and what we found there.
+\newblock 2008.
 
 \bibitem{lim:blink}
 Joonseon~Ahn Sung-Chae~Lim and Myoung~Ho Kim.
